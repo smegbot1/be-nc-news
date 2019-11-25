@@ -96,6 +96,10 @@ describe('formatDates', () => {
   });
 });
 
-describe('makeRefObj', () => {});
+describe.only('makeRefObj', () => {
+  it('function returns a new empty object when an empty array is passed', () => {
+    expect(makeRefObj([])).to.eql({})
+  });
+});
 
 describe('formatComments', () => {});
