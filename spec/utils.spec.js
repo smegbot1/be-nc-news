@@ -26,6 +26,17 @@ describe('formatDates', () => {
     }];
     expect(formatDates(input)[0].created_at).to.eql(new Date(1471522072389))
   });
+  it('function retains all keys of an object passed in the array', () => {
+    const input = [{
+      title: 'Running a Node App',
+      topic: 'coding',
+      author: 'jessjelly',
+      body:
+        'This is part two of a series on how to get up and running with Systemd and Node.js. This part dives deeper into how to successfully run your app with systemd long-term, and how to set it up in a production environment.',
+      created_at: 1471522072389
+    }];
+    expect(formatDates(input)[0]).to.have.keys(['title', 'topic', 'author', 'body', 'created_at'])
+  });
 });
 
 describe('makeRefObj', () => {});
