@@ -88,6 +88,12 @@ describe('formatDates', () => {
     }];
     expect(formatDates(input)).to.eql(output);
   });
+  it('function should not mutate the original array', () => {
+    const input = [{ created_at: 1471522072389 }];
+    const expected = [{ created_at: 1471522072389 }];
+    formatDates(input);
+    expect(input).to.eql(expected);
+  });
 });
 
 describe('makeRefObj', () => {});
