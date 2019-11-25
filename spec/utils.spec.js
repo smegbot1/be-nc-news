@@ -11,6 +11,10 @@ describe('formatDates', () => {
     expect(formatDates(input)).to.eql([]);
     expect(formatDates(input)).to.not.equal(input);
   });
+  it('function returns a new array with a single object in which the timestamp property has been modified', () => {
+    const input = [{ created_at: 1471522072389 }];
+    expect(formatDates(input)).to.eql(new Date(1471522072389));
+  });
 });
 
 describe('makeRefObj', () => {});
