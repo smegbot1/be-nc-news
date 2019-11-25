@@ -104,6 +104,40 @@ describe.only('makeRefObj', () => {
     const input = [{ article_id: 1, title: 'A' }];
     expect(makeRefObj(input, 'title', 'article_id')).to.eql({ A: 1 });
   });
+  it('function returns multiple reference keys in an object where multiple objects are present in the passed array', () => {
+    const input = [{
+      article_id: 1,
+      title: 'Running a node app',
+      body: 'This is part two of a series on how to get up and running with Systemd and Node.js. This part dives deeper into how to successfully run your app with systemd long-term, and how to set it up in a production environment.',
+      votes: 0,
+      topic: 'coding',
+      author: 'jessjelly',
+      created_at: '2016-08-18 13:07:52.389+01'
+    },
+    {
+      article_id: 2,
+      title: 'Running a node app 2',
+      body: 'This is part two of a series on how to get up and running with Systemd and Node.js. This part dives deeper into how to successfully run your app with systemd long-term, and how to set it up in a production environment.',
+      votes: 0,
+      topic: 'coding',
+      author: 'jessjelly',
+      created_at: '2016-08-18 13:07:52.389+01'
+    },
+    {
+      article_id: 3,
+      title: 'Running a node app 3',
+      body: 'This is part two of a series on how to get up and running with Systemd and Node.js. This part dives deeper into how to successfully run your app with systemd long-term, and how to set it up in a production environment.',
+      votes: 0,
+      topic: 'coding',
+      author: 'jessjelly',
+      created_at: '2016-08-18 13:07:52.389+01'
+    }]
+    expect(makeRefObj(input, 'title', 'article_id')).to.eql({
+      'Running a node app': 1,
+      'Running a node app 2': 2,
+      'Running a node app 3': 3 
+    });
+  });
 });
 
 describe('formatComments', () => {});
