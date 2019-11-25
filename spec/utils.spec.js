@@ -146,7 +146,7 @@ describe('makeRefObj', () => {
   });
 });
 
-describe.only('formatComments', () => {
+describe('formatComments', () => {
   it('function returns an empty new array when an empty array is passed', () => {
     const input = [];
     expect(formatComments(input)).to.eql([]);
