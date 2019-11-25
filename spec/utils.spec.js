@@ -98,7 +98,11 @@ describe('formatDates', () => {
 
 describe.only('makeRefObj', () => {
   it('function returns a new empty object when an empty array is passed', () => {
-    expect(makeRefObj([])).to.eql({})
+    expect(makeRefObj([])).to.eql({});
+  });
+  it('function returns a single reference inside a new object when an array with a single object is passed', () => {
+    const input = [{ article_id: 1, title: 'A' }];
+    expect(makeRefObj(input, 'title', 'article_id')).to.eql({ A: 1 });
   });
 });
 
