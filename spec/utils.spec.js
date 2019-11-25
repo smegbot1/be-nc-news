@@ -96,7 +96,7 @@ describe('formatDates', () => {
   });
 });
 
-describe.only('makeRefObj', () => {
+describe('makeRefObj', () => {
   it('function returns a new empty object when an empty array is passed', () => {
     expect(makeRefObj([])).to.eql({});
   });
@@ -137,6 +137,12 @@ describe.only('makeRefObj', () => {
       'Running a node app 2': 2,
       'Running a node app 3': 3 
     });
+  });
+  it('function does not mutate original input array', () => {
+    const input = [{ article_id: 1, title: 'A' }];
+    const expected = [{ article_id: 1, title: 'A' }];
+    makeRefObj(input, 'title', 'article_id')
+    expect(input).to.eql(expected);
   });
 });
 
