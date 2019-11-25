@@ -212,4 +212,23 @@ describe.only('formatComments', () => {
     }];
     expect(formatComments(input, ref, 'belongs_to', 'article_id')).to.eql(expected);
   });
+  it('function does not mutate original input array', () => {
+    const input = [{ 
+      body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+      belongs_to: "They're not exactly dogs, are they?",
+      created_by: 'butter_bridge',
+      votes: 16,
+      created_at: 1511354163389
+    }];
+    const ref = { "They're not exactly dogs, are they?": 1 };
+    const expected = [{ 
+      body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+      belongs_to: "They're not exactly dogs, are they?",
+      created_by: 'butter_bridge',
+      votes: 16,
+      created_at: 1511354163389
+    }];
+    formatComments(input, ref, 'belongs_to', 'article_id')
+    expect(input).to.eql(expected);
+  });
 });
