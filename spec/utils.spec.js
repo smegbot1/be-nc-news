@@ -146,4 +146,10 @@ describe('makeRefObj', () => {
   });
 });
 
-describe('formatComments', () => {});
+describe.only('formatComments', () => {
+  it('function returns an empty new array when an empty array is passed', () => {
+    const input = [];
+    expect(formatComments(input)).to.eql([]);
+    expect(formatComments(input)).to.not.equal(input);
+  });
+});

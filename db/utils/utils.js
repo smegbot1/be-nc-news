@@ -6,4 +6,6 @@ exports.makeRefObj = (list, key, val) => {
     return list.reduce((acc, item) => ({ ...acc, [item[key]]: item[val] }), {})
 };
 
-exports.formatComments = (comments, articleRef) => {};
+exports.formatComments = (comments, articleRef) => {
+    return [];
+};
