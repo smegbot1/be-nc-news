@@ -1,5 +1,5 @@
 const ENV = process.env.NODE_ENV || 'development';
-const { username, password } = require('config');
+const { username, password } = require('./config');
 
 const baseConfig = {
   client: 'pg',
