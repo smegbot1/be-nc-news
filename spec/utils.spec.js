@@ -152,4 +152,64 @@ describe.only('formatComments', () => {
     expect(formatComments(input)).to.eql([]);
     expect(formatComments(input)).to.not.equal(input);
   });
+  it('function returns an array with a modified object, having replaced created_by with author', () => {
+    const input = [{ 
+      body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+      belongs_to: "They're not exactly dogs, are they?",
+      created_by: 'butter_bridge',
+      votes: 16,
+      created_at: 1511354163389
+    }];
+    const ref = { "They're not exactly dogs, are they?": 1 };
+    const expected = [{ 
+      body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+      article_id: 1,
+      created_by: 'butter_bridge',
+      votes: 16,
+      created_at: new Date(1511354163389)
+    }];
+    expect(formatComments(input, ref, 'belongs_to', 'article_id')).to.eql(expected)
+  });
+  it('function returns corrected data with multiple objects passed in array', () => {
+    const input = [{ 
+      body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+      belongs_to: "They're not exactly dogs, are they?",
+      created_by: 'butter_bridge',
+      votes: 16,
+      created_at: 1511354163389
+    },{ 
+      body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+      belongs_to: "They're dogs, are they?",
+      created_by: 'margarine_bridge',
+      votes: 16,
+      created_at: 1511354163973
+    },{ 
+      body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+      belongs_to: "are they?",
+      created_by: 'oil_bridge',
+      votes: 16,
+      created_at: 1511355163389
+    }];
+    const ref = { "They're not exactly dogs, are they?": 1, "They're dogs, are they?": 2, "are they?": 3 };
+    const expected = [{ 
+      body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+      article_id: 1,
+      created_by: 'butter_bridge',
+      votes: 16,
+      created_at: new Date(1511354163389)
+    },{ 
+      body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+      article_id: 2,
+      created_by: 'margarine_bridge',
+      votes: 16,
+      created_at: new Date(1511354163973)
+    },{ 
+      body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+      article_id: 3,
+      created_by: 'oil_bridge',
+      votes: 16,
+      created_at: new Date(1511355163389)
+    }];
+    expect(formatComments(input, ref, 'belongs_to', 'article_id')).to.eql(expected);
+  });
 });
