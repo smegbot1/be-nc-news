@@ -63,6 +63,14 @@ describe.only('/api', () => {
                             expect(user.length).to.equal(1);
                         });
                 });
+                it('Status: 200 returns single user with required keys', () => {
+                    return request(app)
+                        .get('/api/users/butter_bridge')
+                        .expect(200)
+                        .then(({ body: { user } }) => {
+                            expect(user[0]).to.have.keys('username', 'avatar_url', 'name');
+                        });
+                });
             });
         });
     });
