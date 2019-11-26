@@ -6,10 +6,10 @@ const request = require('supertest');
 const app = require('../app');
 const client = require('../db')
 
-after(() => client.destroy());
-beforeEach(() => client.seed.run());
 
 describe.only('/api', () => {
+    after(() => client.destroy());
+    beforeEach(() => client.seed.run());
     describe('INVALID PATH', () => {
         it('Status: 404 returns error when an invalid path is entered on any endpoint', () => {
             return request(app)
@@ -52,12 +52,16 @@ describe.only('/api', () => {
         });
     });
     describe('/users', () => {
-        describe('/:user_id', () => {
+        describe('/:username', () => {
             describe('GET', () => {
-                it('Status: 200', () => {
+                it('Status: 200 returns single user by matching username', () => {
                     return request(app)
-                        .get('/api/users/1')
-                        .expect(200);
+                        .get('/api/users/butter_bridge')
+                        .expect(200)
+                        .then(({ body: { user } }) => {
+                            expect(user).to.be.an('array');
+                            expect(user.length).to.equal(1);
+                        });
                 });
             });
         });
