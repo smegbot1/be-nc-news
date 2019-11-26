@@ -20,6 +20,16 @@ describe('/api', () => {
                 });
         });
     });
+    describe('INVALID HTTP METHOD', () => {
+        it('Status: 405 returns error when an invalid HTTP method is entered on any endpoint', () => {
+            return request(app)
+                .delete('/api/topics')
+                .expect(405)
+                .then(({ body: { msg } }) => {
+                    expect(msg).to.equal('Invalid HTTP method used. Be reasonable man!')
+                });
+        });
+    });
     describe('/topics', () => {
         describe('GET', () => {
             it('Status: 200 returns an array of topics', () => {
