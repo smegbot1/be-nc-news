@@ -51,4 +51,15 @@ describe.only('/api', () => {
             });
         });
     });
+    describe('/users', () => {
+        describe('/:user_id', () => {
+            describe('GET', () => {
+                it('Status: 200', () => {
+                    return request(app)
+                        .get('/api/users/1')
+                        .expect(200);
+                });
+            });
+        });
+    });
 });
