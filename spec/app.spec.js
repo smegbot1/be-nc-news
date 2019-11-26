@@ -85,7 +85,7 @@ describe.only('/api', () => {
                             expect(article).to.be.an('array');
                             expect(article.length).to.equal(1);
                         });
-                });
+                }).timeout(3000);
                 it('Status: 200 returns a single article with required keys', () => {
                     return request(app)
                         .get('/api/articles/1')
@@ -102,7 +102,7 @@ describe.only('/api', () => {
                                 'comment_count'
                             );
                         });
-                });
+                }).timeout(3000);
             });
         });
     });
