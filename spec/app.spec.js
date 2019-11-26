@@ -41,6 +41,14 @@ describe('/api', () => {
                         expect(topics.length).to.equal(3);
                     });
             });
+            it('Status: 200 returns array of topics with required keys', () => {
+                return request(app)
+                    .get('/api/topics')
+                    .expect(200)
+                    .then(({ body: { topics } }) => {
+                        expect(topics[0]).to.have.keys('slug', 'description');
+                    })
+            });
         });
     });
 });
