@@ -1,7 +1,7 @@
 const client = require('../db');
 
-exports.fetchUserById = user_id => {
+exports.fetchUserByUsername = username => {
     return client('users')
         .select('*')
-        .where({user_id});
+        .where('username', username);
 };
