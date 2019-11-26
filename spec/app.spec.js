@@ -9,7 +9,7 @@ const client = require('../db')
 after(() => client.destroy());
 beforeEach(() => client.seed.run());
 
-describe('/api', () => {
+describe.only('/api', () => {
     describe('INVALID PATH', () => {
         it('Status: 404 returns error when an invalid path is entered on any endpoint', () => {
             return request(app)

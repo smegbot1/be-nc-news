@@ -164,7 +164,7 @@ describe('formatComments', () => {
     const expected = [{ 
       body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
       article_id: 1,
-      created_by: 'butter_bridge',
+      author: 'butter_bridge',
       votes: 16,
       created_at: new Date(1511354163389)
     }];
@@ -194,19 +194,19 @@ describe('formatComments', () => {
     const expected = [{ 
       body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
       article_id: 1,
-      created_by: 'butter_bridge',
+      author: 'butter_bridge',
       votes: 16,
       created_at: new Date(1511354163389)
     },{ 
       body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
       article_id: 2,
-      created_by: 'margarine_bridge',
+      author: 'margarine_bridge',
       votes: 16,
       created_at: new Date(1511354163973)
     },{ 
       body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
       article_id: 3,
-      created_by: 'oil_bridge',
+      author: 'oil_bridge',
       votes: 16,
       created_at: new Date(1511355163389)
     }];
