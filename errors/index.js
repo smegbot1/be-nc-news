@@ -1,5 +1,4 @@
-
-
+// Error handlers middleware
 
 // Error controller fuctions
 exports.err404 = (req, res, next) => {

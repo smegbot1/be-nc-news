@@ -78,13 +78,13 @@ describe.only('/api', () => {
         describe('/:article_id', () => {
             describe('GET', () => {
                 it('Status: 200 returns an array with a single article matching the article_id', () => {
-                    return client(app)
+                    return request(app)
                         .get('/api/articles/1')
                         .expect(200)
                         .then(({ body: { article } }) => {
                             expect(article).to.be.an('array');
                             expect(article.length).to.equal(1);
-                        })
+                        });
                 });
             });
         });
