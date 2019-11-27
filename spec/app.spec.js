@@ -75,7 +75,7 @@ describe.only('/api', () => {
         });
     });
     describe('/articles', () => {
-        it.only('Status: 405 returns error when an invalid HTTP method is used', () => {
+        it('Status: 405 returns error when an invalid HTTP method is used', () => {
             return request(app)
                 .delete('/api/articles')
                 .expect(405)
@@ -84,10 +84,14 @@ describe.only('/api', () => {
                 });
         });
         describe.only('GET', () => {
-            it('Status: 200', () => {
+            it('Status: 200 returns an array of all articles from database', () => {
                 return request(app)
                     .get('/api/articles')
-                    .expect(200);
+                    .expect(200)
+                    .then(({ body: { articles } }) => {
+                        expect(articles).to.be.an('array');
+                        expect(articles.length).to.equal(12);
+                    });
             });
         });
         describe('/:article_id', () => {

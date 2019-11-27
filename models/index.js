@@ -1,6 +1,6 @@
 const { fetchTopics } = require('./topics-model');
 const { fetchUserByUsername } = require('./users-model');
-const { fetchArticleById, updateArticle } = require('./articles-model');
+const { fetchArticleById, updateArticle, fetchArticles } = require('./articles-model');
 const { createComment, fetchCommentsByArticleId } = require('./comments-model');
 
 module.exports = {
@@ -9,5 +9,6 @@ module.exports = {
     fetchArticleById,
     updateArticle,
     createComment,
-    fetchCommentsByArticleId
+    fetchCommentsByArticleId,
+    fetchArticles
 };

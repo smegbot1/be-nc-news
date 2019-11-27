@@ -13,6 +13,7 @@ exports.patchArticle = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
-    res.sendStatus(200);
-    // fetchArticles
+    fetchArticles()
+        .then(articles => res.send({articles}))
+        .catch(next);
 };

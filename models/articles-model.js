@@ -22,3 +22,8 @@ exports.updateArticle = (article_id, { inc_votes }) => {
             return article;
         });
 };
+
+exports.fetchArticles = () => {
+    return client('articles')
+        .select('*');
+};
