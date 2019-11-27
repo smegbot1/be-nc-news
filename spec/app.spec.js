@@ -75,6 +75,21 @@ describe.only('/api', () => {
         });
     });
     describe('/articles', () => {
+        it.only('Status: 405 returns error when an invalid HTTP method is used', () => {
+            return request(app)
+                .delete('/api/articles')
+                .expect(405)
+                .then(({ body: { msg } }) => {
+                    expect(msg).to.equal('Invalid HTTP method used. Be reasonable man!')
+                });
+        });
+        describe.only('GET', () => {
+            it('Status: 200', () => {
+                return request(app)
+                    .get('/api/articles')
+                    .expect(200);
+            });
+        });
         describe('/:article_id', () => {
             it('Status: 405 returns error when an invalid HTTP method is used', () => {
                 return request(app)
@@ -83,6 +98,137 @@ describe.only('/api', () => {
                     .then(({ body: { msg } }) => {
                         expect(msg).to.equal('Invalid HTTP method used. Be reasonable man!')
                     });
+            });
+            describe('/:article_id/comments', () => {
+                it('Status: 405 returns error when an invalid HTTP method is used', () => {
+                    return request(app)
+                        .patch('/api/articles/1/comments')
+                        .expect(405)
+                        .then(({ body: { msg } }) => {
+                            expect(msg).to.equal('Invalid HTTP method used. Be reasonable man!')
+                        });
+                });
+                describe('POST', () => {
+                    it('Status: 201 returns newly posted comment object', () => {
+                        return request(app)
+                            .post('/api/articles/1/comments')
+                            .send({ username: 'butter_bridge', body: 'No Patrick, mayonaise is not an instrument.'})
+                            .expect(201)
+                            .then(({ body: { comment } }) => {
+                                expect(comment.author).to.eql('butter_bridge');
+                                expect(comment.body).to.eql('No Patrick, mayonaise is not an instrument.');
+                            });
+                    });
+                    it('Status: 201 returns newly posted comment object with required keys', () => {
+                        return request(app)
+                            .post('/api/articles/1/comments')
+                            .send({ username: 'butter_bridge', body: 'No Patrick, mayonaise is not an instrument.'})
+                            .expect(201)
+                            .then(({ body: { comment } }) => {
+                                expect(comment).to.have.keys(
+                                    'article_id',
+                                    'author',
+                                    'body',
+                                    'comment_id',
+                                    'created_at',
+                                    'votes'
+                                );
+                            });
+                    });
+                    // violates foreign keys insertions into comments
+                    it('Status: 422 sql error handled for trying to insert non-existent id as a foreign key', () => {
+                        return request(app)
+                            .post('/api/articles/42/comments')
+                            .send({ username: 'butter_bridge', body: 'No Patrick, mayonaise is not an instrument.' })
+                            .expect(422)
+                            .then(({ body : { msg } }) => {
+                                expect(msg).to.equal('Unprocessable request.');
+                            });
+                    });
+                    it('Status: 422 returns error when incorrect data type username is passed', () => {
+                        return request(app)
+                            .post('/api/articles/1/comments')
+                            .send({ username: 42, body: 'No Patrick, mayonaise is not an instrument.' })
+                            .expect(422)
+                            .then(({ body: { msg } }) => {
+                                expect(msg).to.equal('Unprocessable request.');
+                            });
+                    });
+                    it('Status: 400 returns bad request when post body is missing a column', () => {
+                        return request(app)
+                            .post('/api/articles/1/comments')
+                            .send({ username: 'butter_bridge', cheese: 'true' })
+                            .expect(400)
+                            .then(({ body: { msg } }) => {
+                                expect(msg).to.equal('Bad request.');
+                            });
+                    });
+                });
+                describe('GET', () => {
+                    it('Status: 200 returns an array of comments for a given article', () => {
+                        return request(app)
+                            .get('/api/articles/1/comments')
+                            .expect(200)
+                            .then(({ body: { comments } }) => {
+                                expect(comments).to.be.an('array');
+                                expect(comments.length).to.equal(13);
+                            });
+                    });
+                    it('Status: 200 returns an array of comment objects with required keys', () => {
+                        return request(app)
+                            .get('/api/articles/1/comments')
+                            .expect(200)
+                            .then(({ body: { comments } }) => {
+                                expect(comments[0]).to.have.keys(
+                                    'comment_id',
+                                    'votes',
+                                    'created_at',
+                                    'author',
+                                    'body'
+                                );
+                            });
+                    });
+                    it('Status: 200 returns default sorted array of comments - created_at', () => {
+                        return request(app)
+                            .get('/api/articles/1/comments')
+                            .expect(200)
+                            .then(({ body: { comments } }) => {
+                                expect(comments).to.be.sortedBy('created_at', { descending: true });
+                            });
+                    });
+                    it('Status: 200 returns query sorted array of comments', () => {
+                        return request(app)
+                            .get('/api/articles/1/comments?sort_by=comment_id')
+                            .expect(200)
+                            .then(({ body: { comments } }) => {
+                                expect(comments).to.be.sortedBy('comment_id', { descending: true });
+                            });
+                    });
+                    it('Status: 200 returns array in default descending order', () => {
+                        return request(app)
+                            .get('/api/articles/1/comments')
+                            .expect(200)
+                            .then(({ body: { comments } }) => {
+                                expect(comments).to.be.sortedBy('created_at', { descending: true });
+                            });
+                    });
+                    it('Status: 200 returns array of comments queried with sort_by and order', () => {
+                        return request(app)
+                            .get('/api/articles/1/comments?order=asc&&sort_by=comment_id')
+                            .expect(200)
+                            .then(({ body: { comments } }) => {
+                                expect(comments).to.be.sortedBy('comment_id');
+                            });
+                    });
+                    it('Status: 400 returns error if passed a non-existent sort_by query', () => {
+                        return request(app)
+                            .get('/api/articles/1/comments?sort_by=bananas')
+                            .expect(400)
+                            .then(({ body: { msg } }) => {
+                                expect(msg).to.equal('Bad request.');
+                            });
+                    });
+                });
             });
             describe('GET', () => {
                 it('Status: 200 returns a single article object with required keys', () => {
@@ -177,141 +323,10 @@ describe.only('/api', () => {
                 });
             });
         });
-        describe('/:article_id/comments', () => {
-            it('Status: 405 returns error when an invalid HTTP method is used', () => {
-                return request(app)
-                    .patch('/api/articles/1/comments')
-                    .expect(405)
-                    .then(({ body: { msg } }) => {
-                        expect(msg).to.equal('Invalid HTTP method used. Be reasonable man!')
-                    });
-            });
-            describe('POST', () => {
-                it('Status: 201 returns newly posted comment object', () => {
-                    return request(app)
-                        .post('/api/articles/1/comments')
-                        .send({ username: 'butter_bridge', body: 'No Patrick, mayonaise is not an instrument.'})
-                        .expect(201)
-                        .then(({ body: { comment } }) => {
-                            expect(comment.author).to.eql('butter_bridge');
-                            expect(comment.body).to.eql('No Patrick, mayonaise is not an instrument.');
-                        });
-                });
-                it('Status: 201 returns newly posted comment object with required keys', () => {
-                    return request(app)
-                        .post('/api/articles/1/comments')
-                        .send({ username: 'butter_bridge', body: 'No Patrick, mayonaise is not an instrument.'})
-                        .expect(201)
-                        .then(({ body: { comment } }) => {
-                            expect(comment).to.have.keys(
-                                'article_id',
-                                'author',
-                                'body',
-                                'comment_id',
-                                'created_at',
-                                'votes'
-                            );
-                        });
-                });
-                // violates foreign keys insertions into comments
-                it('Status: 422 sql error handled for trying to insert non-existent id as a foreign key', () => {
-                    return request(app)
-                        .post('/api/articles/42/comments')
-                        .send({ username: 'butter_bridge', body: 'No Patrick, mayonaise is not an instrument.' })
-                        .expect(422)
-                        .then(({ body : { msg } }) => {
-                            expect(msg).to.equal('Unprocessable request.');
-                        });
-                });
-                it('Status: 422 returns error when incorrect data type username is passed', () => {
-                    return request(app)
-                        .post('/api/articles/1/comments')
-                        .send({ username: 42, body: 'No Patrick, mayonaise is not an instrument.' })
-                        .expect(422)
-                        .then(({ body: { msg } }) => {
-                            expect(msg).to.equal('Unprocessable request.');
-                        });
-                });
-                it('Status: 400 returns bad request when post body is missing a column', () => {
-                    return request(app)
-                        .post('/api/articles/1/comments')
-                        .send({ username: 'butter_bridge', cheese: 'true' })
-                        .expect(400)
-                        .then(({ body: { msg } }) => {
-                            expect(msg).to.equal('Bad request.');
-                        });
-                });
-            });
-            describe.only('GET', () => {
-                it('Status: 200 returns an array of comments for a given article', () => {
-                    return request(app)
-                        .get('/api/articles/1/comments')
-                        .expect(200)
-                        .then(({ body: { comments } }) => {
-                            expect(comments).to.be.an('array');
-                            expect(comments.length).to.equal(13);
-                        });
-                });
-                it('Status: 200 returns an array of comment objects with required keys', () => {
-                    return request(app)
-                        .get('/api/articles/1/comments')
-                        .expect(200)
-                        .then(({ body: { comments } }) => {
-                            expect(comments[0]).to.have.keys(
-                                'comment_id',
-                                'votes',
-                                'created_at',
-                                'author',
-                                'body'
-                            );
-                        });
-                });
-                it('Status: 200 returns default sorted array of comments - created_at', () => {
-                    return request(app)
-                        .get('/api/articles/1/comments')
-                        .expect(200)
-                        .then(({ body: { comments } }) => {
-                            expect(comments).to.be.sortedBy('created_at', { descending: true });
-                        });
-                });
-                it('Status: 200 returns query sorted array of comments', () => {
-                    return request(app)
-                        .get('/api/articles/1/comments?sort_by=comment_id')
-                        .expect(200)
-                        .then(({ body: { comments } }) => {
-                            expect(comments).to.be.sortedBy('comment_id', { descending: true });
-                        });
-                });
-                it('Status: 200 returns array in default descending order', () => {
-                    return request(app)
-                        .get('/api/articles/1/comments')
-                        .expect(200)
-                        .then(({ body: { comments } }) => {
-                            expect(comments).to.be.sortedBy('created_at', { descending: true });
-                        });
-                });
-                it('Status: 200 returns array of comments queried with sort_by and order', () => {
-                    return request(app)
-                        .get('/api/articles/1/comments?order=asc&&sort_by=comment_id')
-                        .expect(200)
-                        .then(({ body: { comments } }) => {
-                            expect(comments).to.be.sortedBy('comment_id');
-                        });
-                });
-                it('Status: 400 returns error if passed a non-existent sort_by query', () => {
-                    return request(app)
-                        .get('/api/articles/1/comments?sort_by=bananas')
-                        .expect(400)
-                        .then(({ body: { msg } }) => {
-                            expect(msg).to.equal('Bad request.');
-                        });
-                });
-            });
-        });
     });
 });
                 // 404 - thrown when a valid id is given but desn't exist
-                // 400 - invalid data type is passed for id
+                // 400 - invalid data type or non-existent parameter/query is passed
                 // 405 - invalid method used on this endpoint
                 // 422 - unprocessable request (e.g. inserting non-existent foreign key)
 
