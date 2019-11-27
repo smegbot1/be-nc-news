@@ -54,44 +54,37 @@ describe.only('/api', () => {
     describe('/users', () => {
         describe('/:username', () => {
             describe('GET', () => {
-                it('Status: 200 returns single user by matching username', () => {
+                it('Status: 200 returns single user object with required keys', () => {
                     return request(app)
                         .get('/api/users/butter_bridge')
                         .expect(200)
                         .then(({ body: { user } }) => {
-                            expect(user).to.be.an('array');
-                            expect(user.length).to.equal(1);
+                            expect(user).to.have.keys('username', 'avatar_url', 'name');
                         });
                 });
-                it('Status: 200 returns single user with required keys', () => {
+                // 404 - thrown when a valid id is given but desn't exist
+                it('Status: 404 error handled when a valid but non-existent username is passed', () => {
                     return request(app)
-                        .get('/api/users/butter_bridge')
-                        .expect(200)
-                        .then(({ body: { user } }) => {
-                            expect(user[0]).to.have.keys('username', 'avatar_url', 'name');
+                        .get('/api/users/:username')
+                        .expect(404)
+                        .then(({ body : { msg } }) => {
+                            expect(msg).to.equal('Username not found.');
                         });
                 });
+                // 400 - invalid data type is passed for id
+                // 405 - invalid method used on this endpoint
             });
         });
     });
     describe('/articles', () => {
         describe('/:article_id', () => {
             describe('GET', () => {
-                it('Status: 200 returns an array with a single article matching the article_id', () => {
+                it('Status: 200 returns a single article object with required keys', () => {
                     return request(app)
                         .get('/api/articles/1')
                         .expect(200)
                         .then(({ body: { article } }) => {
-                            expect(article).to.be.an('array');
-                            expect(article.length).to.equal(1);
-                        });
-                }).timeout(3000);
-                it('Status: 200 returns a single article with required keys', () => {
-                    return request(app)
-                        .get('/api/articles/1')
-                        .expect(200)
-                        .then(({ body: { article } }) => {
-                            expect(article[0]).to.have.keys(
+                            expect(article).to.have.keys(
                                 'author',
                                 'title',
                                 'article_id',
@@ -102,8 +95,14 @@ describe.only('/api', () => {
                                 'comment_count'
                             );
                         });
-                }).timeout(3000);
+                });
+                // 404 - thrown when a valid id is given but desn't exist
+                // 400 - invalid data type is passed for id
+                // 405 - invalid method used on this endpoint
             });
         });
     });
 });
+                // 404 - thrown when a valid id is given but desn't exist
+                // 400 - invalid data type is passed for id
+                // 405 - invalid method used on this endpoint
