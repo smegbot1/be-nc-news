@@ -76,6 +76,14 @@ describe.only('/api', () => {
     });
     describe('/articles', () => {
         describe('/:article_id', () => {
+            it('Status: 405 returns error when an invalid HTTP method is used', () => {
+                return request(app)
+                    .delete('/api/articles/1')
+                    .expect(405)
+                    .then(({ body: { msg } }) => {
+                        expect(msg).to.equal('Invalid HTTP method used. Be reasonable man!')
+                    });
+            });
             describe('GET', () => {
                 it('Status: 200 returns a single article object with required keys', () => {
                     return request(app)
@@ -101,14 +109,6 @@ describe.only('/api', () => {
                         .expect(404)
                         .then(({ body : { msg } }) => {
                             expect(msg).to.equal('Article not found.');
-                        });
-                });
-                it('Status: 405 returns error when an invalid HTTP method is used', () => {
-                    return request(app)
-                        .delete('/api/articles/1')
-                        .expect(405)
-                        .then(({ body: { msg } }) => {
-                            expect(msg).to.equal('Invalid HTTP method used. Be reasonable man!')
                         });
                 });
                 it('Status: 400 returns error when an invalid and non-existent username is passed', () => {
@@ -150,12 +150,24 @@ describe.only('/api', () => {
                 });
                 it('Status: 404 error handled when a valid but non-existent username is passed', () => {
                     return request(app)
-                        .get('/api/articles/42')
+                        .patch('/api/articles/42')
+                        .send({ inc_votes: 1 })
                         .expect(404)
                         .then(({ body : { msg } }) => {
                             expect(msg).to.equal('Article not found.');
                         });
                 });
+                // 400 invalid and non-existent username
+                it('Status: 400 returns error for invalid and non-existent username', () => {
+                    return request(app)
+                        .patch('/api/articles/banana')
+                        .send({ inc_votes: 1 })
+                        .expect(400)
+                        .then(({ body: { msg } }) => {
+                            expect(msg).to.equal('Bad request.')
+                        });
+                });
+                // 400 data passed invalid type
             });
         });
     });
