@@ -1,13 +1,14 @@
 const express = require('express');
 const app = express();
 const apiRouter = require('./routes/api-router');
-const { err404, err500, customErr } = require('./errors');
+const { err404, err500, customErr, err400 } = require('./errors');
 
 app.use(express.json());
 app.use('/api', apiRouter);
+// app.all('/*', err404);
 
-app.all('*', err404);
 app.use(customErr);
+app.use(err400);
 app.use(err500);
 
 module.exports = app;

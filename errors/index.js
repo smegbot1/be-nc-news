@@ -4,8 +4,11 @@ exports.customErr = (err, req, res, next) => {
     else next(err);
 };
 
+exports.err400 = (err, req, res, next) => {
+};
+
 exports.err500 = (err, req, res, next) => {
-    // console.log(err);
+    console.log(err);
     res.status(500).send({ msg: 'Internal server error. Fix your code!'});
 };
 
@@ -16,4 +19,8 @@ exports.err404 = (req, res, next) => {
 
 exports.err405 = (req, res, next) => {
     res.status(405).send({ msg: 'Invalid HTTP method used. Be reasonable man!' });
+};
+
+exports.username400 = (req, res, next) => {
+    res.status(400).send({ msg: 'Invalid username.' });
 };
