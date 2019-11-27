@@ -120,7 +120,7 @@ describe.only('/api', () => {
                         });
                 });
             });
-            describe.only('PATCH', () => {
+            describe('PATCH', () => {
                 it('Status: 201 returns a single article object with its votes value updated', () => {
                     return request(app)
                         .patch('/api/articles/1')
@@ -157,7 +157,6 @@ describe.only('/api', () => {
                             expect(msg).to.equal('Article not found.');
                         });
                 });
-                // 400 invalid and non-existent username
                 it('Status: 400 returns error for invalid and non-existent username', () => {
                     return request(app)
                         .patch('/api/articles/banana')
@@ -167,7 +166,15 @@ describe.only('/api', () => {
                             expect(msg).to.equal('Bad request.')
                         });
                 });
-                // 400 data passed invalid type
+                it('Status: 400 returns error when data passed is of invalid type', () => {
+                    return request(app)
+                        .patch('/api/articles/1')
+                        .send({ inc_votes: 'banana' })
+                        .expect(400)
+                        .then(({ body: { msg } }) => {
+                            expect(msg).to.equal('Bad request.')
+                        });
+                });
             });
         });
     });
