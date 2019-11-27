@@ -184,7 +184,7 @@ describe.only('/api', () => {
                         expect(msg).to.equal('Invalid HTTP method used. Be reasonable man!')
                     });
             });
-            describe.only('POST', () => {
+            describe('POST', () => {
                 it('Status: 201 returns newly posted comment object', () => {
                     return request(app)
                         .post('/api/articles/1/comments')
@@ -239,6 +239,17 @@ describe.only('/api', () => {
                             expect(msg).to.equal('Bad request.');
                         });
                 });
+            });
+            describe.only('GET', () => {
+                it('Status: 200 returns an array of comments for a given article', () => {
+                    return request(app)
+                        .get('/api/articles/1/comments')
+                        .expect(200)
+                        .then(({ body: { comments } }) => {
+                            expect(comments).to.be.an('array');
+                            expect(comments.length).to.equal(5);
+                        });
+                });                
             });
         });
     });
