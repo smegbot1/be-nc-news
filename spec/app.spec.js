@@ -71,15 +71,6 @@ describe.only('/api', () => {
                             expect(msg).to.equal('Invalid HTTP method used. Be reasonable man!')
                         });
                 });
-                // 400 - invalid data type is passed for id
-                it('Status: 400 returns error when an invalid and non-existent username is passed', () => {
-                    return request(app)
-                        .get('/api/users/42')
-                        .expect(400)
-                        .then(({ body: { msg } }) => {
-                            expect(msg).to.equal('Invalid username.')
-                        });
-                });
             });
         });
     });
@@ -104,7 +95,6 @@ describe.only('/api', () => {
                             expect(article.comment_count).to.equal('13');
                         });
                 });
-                // 404 - thrown when a valid id is given but desn't exist
                 it('Status: 404 error handled when a valid but non-existent username is passed', () => {
                     return request(app)
                         .get('/api/articles/42')
@@ -113,7 +103,6 @@ describe.only('/api', () => {
                             expect(msg).to.equal('Article not found.');
                         });
                 });
-                // 405 - invalid method used on this endpoint
                 it('Status: 405 returns error when an invalid HTTP method is used', () => {
                     return request(app)
                         .delete('/api/articles/1')
@@ -122,13 +111,23 @@ describe.only('/api', () => {
                             expect(msg).to.equal('Invalid HTTP method used. Be reasonable man!')
                         });
                 });
-                // 400 - invalid data type is passed for id
-                it.only('Status: 400 returns error when an invalid and non-existent username is passed', () => {
+                it('Status: 400 returns error when an invalid and non-existent username is passed', () => {
                     return request(app)
                         .get('/api/articles/banana')
                         .expect(400)
                         .then(({ body: { msg } }) => {
                             expect(msg).to.equal('Bad request.')
+                        });
+                });
+            });
+            describe.only('PATCH', () => {
+                it('Status: 201', () => {
+                    return request(app)
+                        .patch('/api/articles/1')
+                        .send({ inc_votes: 1 })
+                        .expect(201)
+                        .then(({ body: { article } }) => {
+                            expect(article.votes).to.equal(3);
                         });
                 });
             });
