@@ -28,5 +28,6 @@ exports.fetchArticles = () => {
         .select('articles.author', 'articles.title', 'articles.article_id', 'articles.topic', 'articles.created_at', 'articles.votes')
         .count({ comment_count: 'comment_id' })
         .leftJoin('comments', 'comments.article_id', 'articles.article_id')
-        .groupBy('articles.article_id');
+        .groupBy('articles.article_id')
+        .orderBy('created_at', 'desc');
 };
