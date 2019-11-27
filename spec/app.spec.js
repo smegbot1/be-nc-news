@@ -298,6 +298,14 @@ describe.only('/api', () => {
                             expect(comments).to.be.sortedBy('comment_id');
                         });
                 });
+                it('Status: 400 returns error if passed a non-existent sort_by query', () => {
+                    return request(app)
+                        .get('/api/articles/1/comments?sort_by=bananas')
+                        .expect(400)
+                        .then(({ body: { msg } }) => {
+                            expect(msg).to.equal('Bad request.');
+                        });
+                });
             });
         });
     });
