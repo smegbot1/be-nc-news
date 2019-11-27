@@ -271,7 +271,7 @@ describe.only('/api', () => {
                         .get('/api/articles/1/comments')
                         .expect(200)
                         .then(({ body: { comments } }) => {
-                            expect(comments).to.be.sortedBy('created_at');
+                            expect(comments).to.be.sortedBy('created_at', { descending: true });
                         });
                 });
                 it('Status: 200 returns query sorted array of comments', () => {
@@ -279,7 +279,7 @@ describe.only('/api', () => {
                         .get('/api/articles/1/comments?sort_by=comment_id')
                         .expect(200)
                         .then(({ body: { comments } }) => {
-                            expect(comments).to.be.sortedBy('comment_id');
+                            expect(comments).to.be.sortedBy('comment_id', { descending: true });
                         });
                 });
                 it('Status: 200 returns array in default descending order', () => {
@@ -287,7 +287,7 @@ describe.only('/api', () => {
                         .get('/api/articles/1/comments')
                         .expect(200)
                         .then(({ body: { comments } }) => {
-                            expect(comments).to.be.sortedBy('created_at', {descending: true});
+                            expect(comments).to.be.sortedBy('created_at', { descending: true });
                         });
                 });
             });

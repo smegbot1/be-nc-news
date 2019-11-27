@@ -9,6 +9,6 @@ exports.createComment = (article_id, { username, body }) => {
 exports.fetchCommentsByArticleId = (article_id, sort_by) => {
     return client('comments')
         .select('comment_id', 'votes', 'created_at', 'author', 'body')
-        .orderBy(sort_by || 'created_at')
+        .orderBy(sort_by || 'created_at', 'desc')
         .where({ article_id });
 };
