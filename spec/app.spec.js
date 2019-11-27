@@ -10,16 +10,6 @@ const client = require('../db')
 describe.only('/api', () => {
     after(() => client.destroy());
     beforeEach(() => client.seed.run());
-    describe('INVALID PATH', () => {
-        it('Status: 404 returns error when an invalid path is entered on any endpoint', () => {
-            return request(app)
-                .get('/api/does-not-exist')
-                .expect(404)
-                .then(({ body: { msg } }) => {
-                    expect(msg).to.equal('Path not found, please enter an existing path.')
-                });
-        });
-    });
     describe('INVALID HTTP METHOD', () => {
         it('Status: 405 returns error when an invalid HTTP method is entered on any endpoint', () => {
             return request(app)
@@ -51,7 +41,7 @@ describe.only('/api', () => {
             });
         });
     });
-    describe.only('/users', () => {
+    describe('/users', () => {
         describe('/:username', () => {
             describe('GET', () => {
                 it('Status: 200 returns single user object with required keys', () => {
@@ -79,14 +69,14 @@ describe.only('/api', () => {
                         });
                 });
                 // 400 - invalid data type is passed for id
-                it('Status: 400 returns error when an invalid and non-existent username is passed', () => {
-                    return request(app)
-                        .get('/api/users/42')
-                        .expect(400)
-                        .then(({ body: { msg } }) => {
-                            expect(msg).to.equal()
-                        })
-                });
+                // it.only('Status: 400 returns error when an invalid and non-existent username is passed', () => {
+                //     return request(app)
+                //         .get('/api/users/42')
+                //         .expect(400)
+                //         .then(({ body: { msg } }) => {
+                //             expect(msg).to.equal('Invalid username.')
+                //         });
+                // });
             });
         });
     });
@@ -112,8 +102,24 @@ describe.only('/api', () => {
                         });
                 });
                 // 404 - thrown when a valid id is given but desn't exist
-                // 400 - invalid data type is passed for id
+                it('Status: 404 error handled when a valid but non-existent username is passed', () => {
+                    return request(app)
+                        .get('/api/articles/42')
+                        .expect(404)
+                        .then(({ body : { msg } }) => {
+                            expect(msg).to.equal('Article not found.');
+                        });
+                });
                 // 405 - invalid method used on this endpoint
+                it('Status: 405 returns error when an invalid HTTP method is used', () => {
+                    return request(app)
+                        .delete('/api/articles/butter_bridge')
+                        .expect(405)
+                        .then(({ body: { msg } }) => {
+                            expect(msg).to.equal('Invalid HTTP method used. Be reasonable man!')
+                        });
+                });
+                // 400 - invalid data type is passed for id
             });
         });
     });
