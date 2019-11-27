@@ -1,10 +1,11 @@
 const articlesRouter = require('express').Router();
-const { getArticleById } = require('../controllers');
+const { getArticleById, patchArticle } = require('../controllers');
 const { err405 } = require('../errors');
 
 articlesRouter
     .route('/:article_id')
     .get(getArticleById)
+    .patch(patchArticle)
     .all(err405);
 
 module.exports = articlesRouter;

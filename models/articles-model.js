@@ -13,3 +13,10 @@ exports.fetchArticleById = article_id => {
             else return article;
         });
 };
+
+exports.updateArticle = (article_id, { inc_votes }) => {
+    return client('articles')
+        .increment('votes', inc_votes)
+        .where({ article_id })
+        .returning('*');
+};

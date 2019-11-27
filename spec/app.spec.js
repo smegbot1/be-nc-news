@@ -121,13 +121,13 @@ describe.only('/api', () => {
                 });
             });
             describe.only('PATCH', () => {
-                it('Status: 201', () => {
+                it('Status: 201 returns a single article object with its votes value updated', () => {
                     return request(app)
                         .patch('/api/articles/1')
                         .send({ inc_votes: 1 })
                         .expect(201)
                         .then(({ body: { article } }) => {
-                            expect(article.votes).to.equal(3);
+                            expect(article.votes).to.equal(101);
                         });
                 });
             });

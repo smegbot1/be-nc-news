@@ -1,11 +1,13 @@
-const { fetchArticleById } = require('../models');
+const { fetchArticleById, updateArticle } = require('../models');
 
 exports.getArticleById = (req, res, next) => {
     fetchArticleById(req.params.article_id)
-        .then(([article]) => {
-            console.log('inside the on fulfilement callback...')
-            // console.log(article)
-            res.send({article});
-        })
+        .then(([article]) => res.send({article}))
+        .catch(next);
+};
+
+exports.patchArticle = (req, res, next) => {
+    updateArticle(req.params.article_id, req.body)
+        .then(([article]) => res.status(201).send({article}))
         .catch(next);
 };
