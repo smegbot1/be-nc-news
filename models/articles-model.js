@@ -23,11 +23,11 @@ exports.updateArticle = (article_id, { inc_votes }) => {
         });
 };
 
-exports.fetchArticles = () => {
+exports.fetchArticles = ({ sort_by, order }) => {
     return client('articles')
         .select('articles.author', 'articles.title', 'articles.article_id', 'articles.topic', 'articles.created_at', 'articles.votes')
         .count({ comment_count: 'comment_id' })
         .leftJoin('comments', 'comments.article_id', 'articles.article_id')
         .groupBy('articles.article_id')
-        .orderBy('created_at', 'desc');
+        .orderBy(sort_by || 'created_at', order || 'desc');
 };
