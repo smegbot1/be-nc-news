@@ -249,7 +249,21 @@ describe.only('/api', () => {
                             expect(comments).to.be.an('array');
                             expect(comments.length).to.equal(13);
                         });
-                });                
+                });
+                it('Status: 200 returns an array of comment objects with required keys', () => {
+                    return request(app)
+                        .get('/api/articles/1/comments')
+                        .expect(200)
+                        .then(({ body: { comments } }) => {
+                            expect(comments[0]).to.have.keys(
+                                'comment_id',
+                                'votes',
+                                'created_at',
+                                'author',
+                                'body'
+                            );
+                        });
+                });
             });
         });
     });
