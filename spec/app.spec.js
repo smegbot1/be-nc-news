@@ -131,6 +131,18 @@ describe.only('/api', () => {
                     .expect(200)
                     .then(({ body: { articles } }) => {
                         expect(articles.length).to.equal(6);
+                        for (let i = 0; i < articles.length; i ++)
+                        expect(articles[i].author).to.eql('icellusedkars');
+                    });
+            });
+            it('Status: 200 returns topic query filtered articles', () => {
+                return request(app)
+                    .get('/api/articles?topic=mitch')
+                    .expect(200)
+                    .then(({ body: { articles } }) => {
+                        expect(articles.length).to.equal(11);
+                        for (let i = 0; i < articles.length; i ++)
+                        expect(articles[i].topic).to.eql('mitch');
                     });
             });
         });
