@@ -242,7 +242,7 @@ describe.only('/api', () => {
                         });
                 });
             });
-            describe('GET', () => {
+            describe.only('GET', () => {
                 it('Status: 200 returns an array of comments for a given article', () => {
                     return request(app)
                         .get('/api/articles/1/comments')
@@ -280,6 +280,14 @@ describe.only('/api', () => {
                         .expect(200)
                         .then(({ body: { comments } }) => {
                             expect(comments).to.be.sortedBy('comment_id');
+                        });
+                });
+                it('Status: 200 returns array in default descending order', () => {
+                    return request(app)
+                        .get('/api/articles/1/comments')
+                        .expect(200)
+                        .then(({ body: { comments } }) => {
+                            expect(comments).to.be.sortedBy('created_at', {descending: true});
                         });
                 });
             });
