@@ -25,5 +25,8 @@ exports.updateArticle = (article_id, { inc_votes }) => {
 
 exports.fetchArticles = () => {
     return client('articles')
-        .select('*');
+        .select('articles.author', 'articles.title', 'articles.article_id', 'articles.topic', 'articles.created_at', 'articles.votes')
+        .count({ comment_count: 'comment_id' })
+        .leftJoin('comments', 'comments.article_id', 'articles.article_id')
+        .groupBy('articles.article_id');
 };

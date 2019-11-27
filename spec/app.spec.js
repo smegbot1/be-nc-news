@@ -104,7 +104,7 @@ describe.only('/api', () => {
                             'article_id',
                             'topic',
                             'created_at',
-                            'voters',
+                            'votes',
                             'comment_count'
                         );
                     });
