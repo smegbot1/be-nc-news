@@ -15,8 +15,9 @@ exports.fetchArticleById = article_id => {
 };
 
 exports.updateArticle = (article_id, { inc_votes }) => {
-    return client('articles')
-        .increment('votes', inc_votes)
-        .where({ article_id })
-        .returning('*');
+    return this.fetchArticleById(article_id)
+        .then(article => {
+            article[0].votes += inc_votes
+            return article;
+        });
 };

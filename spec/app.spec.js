@@ -130,6 +130,24 @@ describe.only('/api', () => {
                             expect(article.votes).to.equal(101);
                         });
                 });
+                it('Status: 201 returns a single article object with required keys', () => {
+                    return request(app)
+                        .patch('/api/articles/1')
+                        .send({ inc_votes: 1 })
+                        .expect(201)
+                        .then(({ body: { article } }) => {
+                            expect(article).to.have.keys(
+                                'author',
+                                'title',
+                                'article_id',
+                                'body',
+                                'topic',
+                                'created_at',
+                                'votes',
+                                'comment_count'
+                            );
+                        });
+                });
             });
         });
     });
