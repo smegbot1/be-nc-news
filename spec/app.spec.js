@@ -117,6 +117,14 @@ describe.only('/api', () => {
                         expect(articles).to.be.sortedBy('created_at', { descending: true });
                     });
             });
+            it('Status: 200 returns query sorted array of articles', () => {
+                return request(app)
+                    .get('/api/articles?sort_by=author&&order=asc')
+                    .expect(200)
+                    .then(({ body: { articles } }) => {
+                        expect(articles).to.be.sortedBy('author');
+                    });
+            });
         });
         describe('/:article_id', () => {
             it('Status: 405 returns error when an invalid HTTP method is used', () => {
