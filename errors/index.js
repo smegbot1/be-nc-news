@@ -1,4 +1,13 @@
 // Error handlers middleware
+exports.customErr = (err, req, res, next) => {
+    if (err.status) res.status(err.status).send({msg: err.msg});
+    else next(err);
+};
+
+exports.err500 = (err, req, res, next) => {
+    // console.log(err);
+    res.status(500).send({ msg: 'Internal server error. Fix your code!'});
+};
 
 // Error controller fuctions
 exports.err404 = (req, res, next) => {

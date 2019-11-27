@@ -51,7 +51,7 @@ describe.only('/api', () => {
             });
         });
     });
-    describe('/users', () => {
+    describe.only('/users', () => {
         describe('/:username', () => {
             describe('GET', () => {
                 it('Status: 200 returns single user object with required keys', () => {
@@ -62,17 +62,24 @@ describe.only('/api', () => {
                             expect(user).to.have.keys('username', 'avatar_url', 'name');
                         });
                 });
-                // 404 - thrown when a valid id is given but desn't exist
                 it('Status: 404 error handled when a valid but non-existent username is passed', () => {
                     return request(app)
-                        .get('/api/users/:username')
+                        .get('/api/users/bananas')
                         .expect(404)
                         .then(({ body : { msg } }) => {
                             expect(msg).to.equal('Username not found.');
                         });
                 });
-                // 400 - invalid data type is passed for id
                 // 405 - invalid method used on this endpoint
+                it('Status: 405 returns error when an invalid HTTP method is used', () => {
+                    return request(app)
+                        .delete('/api/users/butter_bridge')
+                        .expect(405)
+                        .then(({ body: { msg } }) => {
+                            expect(msg).to.equal('Invalid HTTP method used. Be reasonable man!')
+                        });
+                });
+                // 400 - invalid data type is passed for id
             });
         });
     });
@@ -94,6 +101,7 @@ describe.only('/api', () => {
                                 'votes',
                                 'comment_count'
                             );
+                            expect(article.comment_count).to.equal('13');
                         });
                 });
                 // 404 - thrown when a valid id is given but desn't exist
@@ -106,3 +114,5 @@ describe.only('/api', () => {
                 // 404 - thrown when a valid id is given but desn't exist
                 // 400 - invalid data type is passed for id
                 // 405 - invalid method used on this endpoint
+
+                // check for order of returned array first, where _count is present and testing count value
