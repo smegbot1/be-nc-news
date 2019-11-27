@@ -290,6 +290,14 @@ describe.only('/api', () => {
                             expect(comments).to.be.sortedBy('created_at', { descending: true });
                         });
                 });
+                it('Status: 200 returns array of comments queried with sort_by and order', () => {
+                    return request(app)
+                        .get('/api/articles/1/comments?order=asc&&sort_by=comment_id')
+                        .expect(200)
+                        .then(({ body: { comments } }) => {
+                            expect(comments).to.be.sortedBy('comment_id');
+                        });
+                });
             });
         });
     });
