@@ -93,6 +93,22 @@ describe.only('/api', () => {
                         expect(articles.length).to.equal(12);
                     });
             });
+            it('Status: 200 returns an array of all articles with required keys', () => {
+                return request(app)
+                    .get('/api/articles')
+                    .expect(200)
+                    .then(({ body: { articles } }) => {
+                        expect(articles[0]).to.have.keys(
+                            'author',
+                            'title',
+                            'article_id',
+                            'topic',
+                            'created_at',
+                            'voters',
+                            'comment_count'
+                        );
+                    });
+            });
         });
         describe('/:article_id', () => {
             it('Status: 405 returns error when an invalid HTTP method is used', () => {
