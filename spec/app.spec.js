@@ -189,6 +189,22 @@ describe.only('/api', () => {
                             expect(comment.body).to.eql('No Patrick, mayonaise is not an instrument.');
                         });
                 });
+                it('Status: 201 returns newly posted comment object with required keys', () => {
+                    return request(app)
+                        .post('/api/articles/1/comments')
+                        .send({ username: 'butter_bridge', body: 'No Patrick, mayonaise is not an instrument.'})
+                        .expect(201)
+                        .then(({ body: { comment } }) => {
+                            expect(comment).to.have.keys(
+                                'article_id',
+                                'author',
+                                'body',
+                                'comment_id',
+                                'created_at',
+                                'votes'
+                            );
+                        });
+                });
             });
         });
     });
