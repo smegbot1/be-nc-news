@@ -182,10 +182,11 @@ describe.only('/api', () => {
                 it('Status: 201 returns newly posted comment object', () => {
                     return request(app)
                         .post('/api/articles/1/comments')
-                        .send({ username: 'smegbot', body: 'No Patrick, mayonaise is not an instrument.'})
+                        .send({ username: 'butter_bridge', body: 'No Patrick, mayonaise is not an instrument.'})
                         .expect(201)
                         .then(({ body: { comment } }) => {
-                            expect(comment).to.eql({ username: 'smegbot', body: 'No Patrick, mayonaise is not an instrument.'});
+                            expect(comment.author).to.eql('butter_bridge');
+                            expect(comment.body).to.eql('No Patrick, mayonaise is not an instrument.');
                         });
                 });
             });
