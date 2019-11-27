@@ -125,6 +125,14 @@ describe.only('/api', () => {
                         expect(articles).to.be.sortedBy('author');
                     });
             });
+            it('Status: 200 returns author query filtered articles', () => {
+                return request(app)
+                    .get('/api/articles?author=icellusedkars')
+                    .expect(200)
+                    .then(({ body: { articles } }) => {
+                        expect(articles.length).to.equal(6);
+                    });
+            });
         });
         describe('/:article_id', () => {
             it('Status: 405 returns error when an invalid HTTP method is used', () => {
