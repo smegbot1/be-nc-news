@@ -271,7 +271,15 @@ describe.only('/api', () => {
                         .get('/api/articles/1/comments')
                         .expect(200)
                         .then(({ body: { comments } }) => {
-                            expect(comments).to.be.sortedBy('created_at')
+                            expect(comments).to.be.sortedBy('created_at');
+                        });
+                });
+                it('Status: 200 returns query sorted array of comments', () => {
+                    return request(app)
+                        .get('/api/articles/1/comments?sort_by=comment_id')
+                        .expect(200)
+                        .then(({ body: { comments } }) => {
+                            expect(comments).to.be.sortedBy('comments');
                         });
                 });
             });
