@@ -242,7 +242,7 @@ describe.only('/api', () => {
                         });
                 });
             });
-            describe.only('GET', () => {
+            describe('GET', () => {
                 it('Status: 200 returns an array of comments for a given article', () => {
                     return request(app)
                         .get('/api/articles/1/comments')
@@ -279,7 +279,7 @@ describe.only('/api', () => {
                         .get('/api/articles/1/comments?sort_by=comment_id')
                         .expect(200)
                         .then(({ body: { comments } }) => {
-                            expect(comments).to.be.sortedBy('comments');
+                            expect(comments).to.be.sortedBy('comment_id');
                         });
                 });
             });
