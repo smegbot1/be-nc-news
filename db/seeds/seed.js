@@ -14,9 +14,7 @@ exports.seed = function(knex) {
   return knex.migrate
     .rollback()
     .then(() => knex.migrate.latest())
-    .then(() => {
-      return Promise.all([topicsInsertions, usersInsertions])
-    })
+    .then(() => Promise.all([topicsInsertions, usersInsertions]))
     .then(() => {
       const amendedArticles = formatDates(articleData);
       return knex('articles').insert(amendedArticles).returning('*');
