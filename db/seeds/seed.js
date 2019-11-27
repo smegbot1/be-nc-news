@@ -10,7 +10,6 @@ const { formatDates, formatComments, makeRefObj } = require('../utils/utils');
 exports.seed = function(knex) {
   const topicsInsertions = knex('topics').insert(topicData);
   const usersInsertions = knex('users').insert(userData);
-
   return knex.migrate
     .rollback()
     .then(() => knex.migrate.latest())
@@ -23,5 +22,5 @@ exports.seed = function(knex) {
       const articleRef = makeRefObj(articleRows, 'title', 'article_id');
       const formattedComments = formatComments(commentData, articleRef, 'belongs_to', 'article_id');
       return knex('comments').insert(formattedComments);
-    });
+    })
 };

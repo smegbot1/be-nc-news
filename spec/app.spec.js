@@ -9,7 +9,10 @@ const client = require('../db')
 
 describe.only('/api', () => {
     after(() => client.destroy());
-    beforeEach(() => client.seed.run());
+    beforeEach(function() { 
+        this.timeout(3000)
+        return client.seed.run()
+    });
     describe('INVALID HTTP METHOD', () => {
         it('Status: 405 returns error when an invalid HTTP method is entered on any endpoint', () => {
             return request(app)
@@ -69,14 +72,14 @@ describe.only('/api', () => {
                         });
                 });
                 // 400 - invalid data type is passed for id
-                // it.only('Status: 400 returns error when an invalid and non-existent username is passed', () => {
-                //     return request(app)
-                //         .get('/api/users/42')
-                //         .expect(400)
-                //         .then(({ body: { msg } }) => {
-                //             expect(msg).to.equal('Invalid username.')
-                //         });
-                // });
+                it('Status: 400 returns error when an invalid and non-existent username is passed', () => {
+                    return request(app)
+                        .get('/api/users/42')
+                        .expect(400)
+                        .then(({ body: { msg } }) => {
+                            expect(msg).to.equal('Invalid username.')
+                        });
+                });
             });
         });
     });
@@ -113,13 +116,21 @@ describe.only('/api', () => {
                 // 405 - invalid method used on this endpoint
                 it('Status: 405 returns error when an invalid HTTP method is used', () => {
                     return request(app)
-                        .delete('/api/articles/butter_bridge')
+                        .delete('/api/articles/1')
                         .expect(405)
                         .then(({ body: { msg } }) => {
                             expect(msg).to.equal('Invalid HTTP method used. Be reasonable man!')
                         });
                 });
                 // 400 - invalid data type is passed for id
+                it.only('Status: 400 returns error when an invalid and non-existent username is passed', () => {
+                    return request(app)
+                        .get('/api/articles/banana')
+                        .expect(400)
+                        .then(({ body: { msg } }) => {
+                            expect(msg).to.equal('Bad request.')
+                        });
+                });
             });
         });
     });
