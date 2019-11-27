@@ -5,3 +5,7 @@ exports.createComment = (article_id, { username, body }) => {
         .insert({article_id, author: username, body})
         .returning('*');
 };
+
+exports.fetchCommentsByArticleId = article_id => {
+
+};
