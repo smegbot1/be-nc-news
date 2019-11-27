@@ -177,6 +177,19 @@ describe.only('/api', () => {
                 });
             });
         });
+        describe.only('/:article_id/comments', () => {
+            describe('POST', () => {
+                it('Status: 201 returns newly posted comment object', () => {
+                    return request(app)
+                        .post('/api/articles/1/comments')
+                        .send({ username: 'smegbot', body: 'No Patrick, mayonaise is not an instrument.'})
+                        .expect(201)
+                        .then(({ body: { comment } }) => {
+                            expect(comment).to.eql({ username: 'smegbot', body: 'No Patrick, mayonaise is not an instrument.'});
+                        });
+                });
+            });
+        });
     });
 });
                 // 404 - thrown when a valid id is given but desn't exist
