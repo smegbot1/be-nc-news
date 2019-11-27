@@ -247,7 +247,7 @@ describe.only('/api', () => {
                         .expect(200)
                         .then(({ body: { comments } }) => {
                             expect(comments).to.be.an('array');
-                            expect(comments.length).to.equal(5);
+                            expect(comments.length).to.equal(13);
                         });
                 });                
             });

@@ -7,5 +7,7 @@ exports.createComment = (article_id, { username, body }) => {
 };
 
 exports.fetchCommentsByArticleId = article_id => {
-
+    return client('comments')
+        .select('*')
+        .where({ article_id });
 };
