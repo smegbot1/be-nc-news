@@ -212,13 +212,31 @@ describe.only('/api', () => {
                         });
                 });
                 // violates foreign keys insertions into comments
-                it('Status: 422 error handled when a valid but non-existent username is passed', () => {
+                it('Status: 422 sql error handled for trying to insert non-existent id as a foreign key', () => {
                     return request(app)
                         .post('/api/articles/42/comments')
                         .send({ username: 'butter_bridge', body: 'No Patrick, mayonaise is not an instrument.' })
                         .expect(422)
                         .then(({ body : { msg } }) => {
                             expect(msg).to.equal('Unprocessable request.');
+                        });
+                });
+                it('Status: 422 returns error when incorrect data type username is passed', () => {
+                    return request(app)
+                        .post('/api/articles/1/comments')
+                        .send({ username: 42, body: 'No Patrick, mayonaise is not an instrument.' })
+                        .expect(422)
+                        .then(({ body: { msg } }) => {
+                            expect(msg).to.equal('Unprocessable request.');
+                        });
+                });
+                it('Status: 400 returns bad request when post body is missing a column', () => {
+                    return request(app)
+                        .post('/api/articles/1/comments')
+                        .send({ username: 'butter_bridge', cheese: 'true' })
+                        .expect(400)
+                        .then(({ body: { msg } }) => {
+                            expect(msg).to.equal('Bad request.');
                         });
                 });
             });

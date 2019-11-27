@@ -5,7 +5,7 @@ exports.customErr = (err, req, res, next) => {
 };
 
 exports.err400 = (err, req, res, next) => {
-    const lib = ['22P02'];
+    const lib = ['22P02', '23502'];
     if (lib.includes(err.code)) res.status(400).send({ msg: 'Bad request.' });
     else next(err);
 };
