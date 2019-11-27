@@ -83,7 +83,7 @@ describe.only('/api', () => {
                     expect(msg).to.equal('Invalid HTTP method used. Be reasonable man!')
                 });
         });
-        describe.only('GET', () => {
+        describe('GET', () => {
             it('Status: 200 returns an array of all articles from database', () => {
                 return request(app)
                     .get('/api/articles')
@@ -154,6 +154,98 @@ describe.only('/api', () => {
                     .then(({ body: { msg } }) => {
                         expect(msg).to.equal('Invalid HTTP method used. Be reasonable man!')
                     });
+            });
+            describe('GET', () => {
+                it('Status: 200 returns a single article object with required keys', () => {
+                    return request(app)
+                        .get('/api/articles/1')
+                        .expect(200)
+                        .then(({ body: { article } }) => {
+                            expect(article).to.have.keys(
+                                'author',
+                                'title',
+                                'article_id',
+                                'body',
+                                'topic',
+                                'created_at',
+                                'votes',
+                                'comment_count'
+                            );
+                            expect(article.comment_count).to.equal('13');
+                        });
+                });
+                it('Status: 404 error handled when a valid but non-existent username is passed', () => {
+                    return request(app)
+                        .get('/api/articles/42')
+                        .expect(404)
+                        .then(({ body : { msg } }) => {
+                            expect(msg).to.equal('Article not found.');
+                        });
+                });
+                it('Status: 400 returns error when an invalid and non-existent username is passed', () => {
+                    return request(app)
+                        .get('/api/articles/banana')
+                        .expect(400)
+                        .then(({ body: { msg } }) => {
+                            expect(msg).to.equal('Bad request.')
+                        });
+                });
+            });
+            describe('PATCH', () => {
+                it('Status: 201 returns a single article object with its votes value updated', () => {
+                    return request(app)
+                        .patch('/api/articles/1')
+                        .send({ inc_votes: 1 })
+                        .expect(201)
+                        .then(({ body: { article } }) => {
+                            expect(article.votes).to.equal(101);
+                        });
+                });
+                it('Status: 201 returns a single article object with required keys', () => {
+                    return request(app)
+                        .patch('/api/articles/1')
+                        .send({ inc_votes: 1 })
+                        .expect(201)
+                        .then(({ body: { article } }) => {
+                            expect(article).to.have.keys(
+                                'author',
+                                'title',
+                                'article_id',
+                                'body',
+                                'topic',
+                                'created_at',
+                                'votes',
+                                'comment_count'
+                            );
+                        });
+                });
+                it('Status: 404 error handled when a valid but non-existent username is passed', () => {
+                    return request(app)
+                        .patch('/api/articles/42')
+                        .send({ inc_votes: 1 })
+                        .expect(404)
+                        .then(({ body : { msg } }) => {
+                            expect(msg).to.equal('Article not found.');
+                        });
+                });
+                it('Status: 400 returns error for invalid and non-existent username', () => {
+                    return request(app)
+                        .patch('/api/articles/banana')
+                        .send({ inc_votes: 1 })
+                        .expect(400)
+                        .then(({ body: { msg } }) => {
+                            expect(msg).to.equal('Bad request.')
+                        });
+                });
+                it('Status: 400 returns error when data passed is of invalid type', () => {
+                    return request(app)
+                        .patch('/api/articles/1')
+                        .send({ inc_votes: 'banana' })
+                        .expect(400)
+                        .then(({ body: { msg } }) => {
+                            expect(msg).to.equal('Bad request.')
+                        });
+                });
             });
             describe('/:article_id/comments', () => {
                 it('Status: 405 returns error when an invalid HTTP method is used', () => {
@@ -284,98 +376,6 @@ describe.only('/api', () => {
                                 expect(msg).to.equal('Bad request.');
                             });
                     });
-                });
-            });
-            describe('GET', () => {
-                it('Status: 200 returns a single article object with required keys', () => {
-                    return request(app)
-                        .get('/api/articles/1')
-                        .expect(200)
-                        .then(({ body: { article } }) => {
-                            expect(article).to.have.keys(
-                                'author',
-                                'title',
-                                'article_id',
-                                'body',
-                                'topic',
-                                'created_at',
-                                'votes',
-                                'comment_count'
-                            );
-                            expect(article.comment_count).to.equal('13');
-                        });
-                });
-                it('Status: 404 error handled when a valid but non-existent username is passed', () => {
-                    return request(app)
-                        .get('/api/articles/42')
-                        .expect(404)
-                        .then(({ body : { msg } }) => {
-                            expect(msg).to.equal('Article not found.');
-                        });
-                });
-                it('Status: 400 returns error when an invalid and non-existent username is passed', () => {
-                    return request(app)
-                        .get('/api/articles/banana')
-                        .expect(400)
-                        .then(({ body: { msg } }) => {
-                            expect(msg).to.equal('Bad request.')
-                        });
-                });
-            });
-            describe('PATCH', () => {
-                it('Status: 201 returns a single article object with its votes value updated', () => {
-                    return request(app)
-                        .patch('/api/articles/1')
-                        .send({ inc_votes: 1 })
-                        .expect(201)
-                        .then(({ body: { article } }) => {
-                            expect(article.votes).to.equal(101);
-                        });
-                });
-                it('Status: 201 returns a single article object with required keys', () => {
-                    return request(app)
-                        .patch('/api/articles/1')
-                        .send({ inc_votes: 1 })
-                        .expect(201)
-                        .then(({ body: { article } }) => {
-                            expect(article).to.have.keys(
-                                'author',
-                                'title',
-                                'article_id',
-                                'body',
-                                'topic',
-                                'created_at',
-                                'votes',
-                                'comment_count'
-                            );
-                        });
-                });
-                it('Status: 404 error handled when a valid but non-existent username is passed', () => {
-                    return request(app)
-                        .patch('/api/articles/42')
-                        .send({ inc_votes: 1 })
-                        .expect(404)
-                        .then(({ body : { msg } }) => {
-                            expect(msg).to.equal('Article not found.');
-                        });
-                });
-                it('Status: 400 returns error for invalid and non-existent username', () => {
-                    return request(app)
-                        .patch('/api/articles/banana')
-                        .send({ inc_votes: 1 })
-                        .expect(400)
-                        .then(({ body: { msg } }) => {
-                            expect(msg).to.equal('Bad request.')
-                        });
-                });
-                it('Status: 400 returns error when data passed is of invalid type', () => {
-                    return request(app)
-                        .patch('/api/articles/1')
-                        .send({ inc_votes: 'banana' })
-                        .expect(400)
-                        .then(({ body: { msg } }) => {
-                            expect(msg).to.equal('Bad request.')
-                        });
                 });
             });
         });
