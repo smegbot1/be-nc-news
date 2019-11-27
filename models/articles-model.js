@@ -23,12 +23,13 @@ exports.updateArticle = (article_id, { inc_votes }) => {
         });
 };
 
-exports.fetchArticles = ({ sort_by, order, author }) => {
+exports.fetchArticles = ({ sort_by, order, author, topic }) => {
     return client('articles')
         .select('articles.author', 'articles.title', 'articles.article_id', 'articles.topic', 'articles.created_at', 'articles.votes')
         .count({ comment_count: 'comment_id' })
         .leftJoin('comments', 'comments.article_id', 'articles.article_id')
         .groupBy('articles.article_id')
         .orderBy(sort_by || 'created_at', order || 'desc')
-        .modify(query => author ? query.where('articles.author', author) : query);
+        .modify(query => author ? query.where('articles.author', author) : query)
+        .modify(query => topic ? query.where('articles.topic', topic) : query);
 };
