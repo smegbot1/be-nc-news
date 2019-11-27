@@ -70,7 +70,6 @@ describe.only('/api', () => {
                             expect(msg).to.equal('Username not found.');
                         });
                 });
-                // 405 - invalid method used on this endpoint
                 it('Status: 405 returns error when an invalid HTTP method is used', () => {
                     return request(app)
                         .delete('/api/users/butter_bridge')
@@ -80,6 +79,14 @@ describe.only('/api', () => {
                         });
                 });
                 // 400 - invalid data type is passed for id
+                it('Status: 400 returns error when an invalid and non-existent username is passed', () => {
+                    return request(app)
+                        .get('/api/users/42')
+                        .expect(400)
+                        .then(({ body: { msg } }) => {
+                            expect(msg).to.equal()
+                        })
+                });
             });
         });
     });
