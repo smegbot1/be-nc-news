@@ -13,8 +13,8 @@ describe.only('/api', () => {
         this.timeout(4000)
         return client.seed.run()
     });
-    describe('INVALID HTTP METHOD', () => {
-        it('Status: 405 returns error when an invalid HTTP method is entered on any endpoint', () => {
+    describe('/topics', () => {
+        it('Status: 405 returns error when an invalid HTTP method is used', () => {
             return request(app)
                 .delete('/api/topics')
                 .expect(405)
@@ -22,8 +22,6 @@ describe.only('/api', () => {
                     expect(msg).to.equal('Invalid HTTP method used. Be reasonable man!')
                 });
         });
-    });
-    describe('/topics', () => {
         describe('GET', () => {
             it('Status: 200 returns an array of topics', () => {
                 return request(app)
@@ -46,6 +44,14 @@ describe.only('/api', () => {
     });
     describe('/users', () => {
         describe('/:username', () => {
+            it('Status: 405 returns error when an invalid HTTP method is used', () => {
+                return request(app)
+                    .delete('/api/users/butter_bridge')
+                    .expect(405)
+                    .then(({ body: { msg } }) => {
+                        expect(msg).to.equal('Invalid HTTP method used. Be reasonable man!')
+                    });
+            });
             describe('GET', () => {
                 it('Status: 200 returns single user object with required keys', () => {
                     return request(app)
@@ -61,14 +67,6 @@ describe.only('/api', () => {
                         .expect(404)
                         .then(({ body : { msg } }) => {
                             expect(msg).to.equal('Username not found.');
-                        });
-                });
-                it('Status: 405 returns error when an invalid HTTP method is used', () => {
-                    return request(app)
-                        .delete('/api/users/butter_bridge')
-                        .expect(405)
-                        .then(({ body: { msg } }) => {
-                            expect(msg).to.equal('Invalid HTTP method used. Be reasonable man!')
                         });
                 });
             });
@@ -177,8 +175,16 @@ describe.only('/api', () => {
                 });
             });
         });
-        describe.only('/:article_id/comments', () => {
-            describe('POST', () => {
+        describe('/:article_id/comments', () => {
+            it('Status: 405 returns error when an invalid HTTP method is used', () => {
+                return request(app)
+                    .patch('/api/articles/1/comments')
+                    .expect(405)
+                    .then(({ body: { msg } }) => {
+                        expect(msg).to.equal('Invalid HTTP method used. Be reasonable man!')
+                    });
+            });
+            describe.only('POST', () => {
                 it('Status: 201 returns newly posted comment object', () => {
                     return request(app)
                         .post('/api/articles/1/comments')
@@ -205,6 +211,16 @@ describe.only('/api', () => {
                             );
                         });
                 });
+                // violates foreign keys insertions into comments
+                it('Status: 422 error handled when a valid but non-existent username is passed', () => {
+                    return request(app)
+                        .post('/api/articles/42/comments')
+                        .send({ username: 'butter_bridge', body: 'No Patrick, mayonaise is not an instrument.' })
+                        .expect(422)
+                        .then(({ body : { msg } }) => {
+                            expect(msg).to.equal('Unprocessable request.');
+                        });
+                });
             });
         });
     });
@@ -212,5 +228,6 @@ describe.only('/api', () => {
                 // 404 - thrown when a valid id is given but desn't exist
                 // 400 - invalid data type is passed for id
                 // 405 - invalid method used on this endpoint
+                // 422 - unprocessable request (e.g. inserting non-existent foreign key)
 
                 // check for order of returned array first, where _count is present and testing count value
