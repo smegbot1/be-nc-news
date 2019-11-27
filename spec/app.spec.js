@@ -10,7 +10,7 @@ const client = require('../db')
 describe.only('/api', () => {
     after(() => client.destroy());
     beforeEach(function() { 
-        this.timeout(3000)
+        this.timeout(4000)
         return client.seed.run()
     });
     describe('INVALID HTTP METHOD', () => {
@@ -146,6 +146,14 @@ describe.only('/api', () => {
                                 'votes',
                                 'comment_count'
                             );
+                        });
+                });
+                it('Status: 404 error handled when a valid but non-existent username is passed', () => {
+                    return request(app)
+                        .get('/api/articles/42')
+                        .expect(404)
+                        .then(({ body : { msg } }) => {
+                            expect(msg).to.equal('Article not found.');
                         });
                 });
             });
