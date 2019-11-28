@@ -477,7 +477,7 @@ describe.only('/api', () => {
                         .then(({ body: { msg } }) => expect(msg).to.equal('Bad request.'));
                 });
             });
-            describe.only('DELETE', () => {
+            describe('DELETE', () => {
                 it('Status: 204 request deletes selected comment from comments table', () => {
                     return request(app)
                         .delete('/api/comments/1')
