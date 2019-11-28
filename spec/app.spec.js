@@ -376,6 +376,14 @@ describe.only('/api', () => {
                                 expect(msg).to.equal('Bad request.');
                             });
                     });
+                    it.only('Status: 400 returns error if something other than asc or desc is passed for order query', () => {
+                        return request(app)
+                            .get('/api/articles/1/comments?order=banana')
+                            .expect(400)
+                            .then(({ body: { msg } }) => {
+                                expect(msg).to.equal('Query can only take ascending or descending order.')
+                            });
+                    });
                 });
             });
         });
