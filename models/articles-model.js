@@ -24,7 +24,7 @@ exports.updateArticle = (article_id, { inc_votes }) => {
 };
 
 exports.fetchArticles = ({ sort_by, order, author, topic }) => {
-    if (!(order === 'desc' || order === 'asc') && order) return Promise.reject({ status: 400, msg: 'Query can only take ascending or descending order.'} );
+    if (!(order === 'desc' || order === 'asc') && order) return Promise.reject({ status: 400, msg: 'Query can only take ascending or descending order.' });
     return client('articles')
         .select('articles.author', 'articles.title', 'articles.article_id', 'articles.topic', 'articles.created_at', 'articles.votes')
         .count({ comment_count: 'comment_id' })
@@ -32,5 +32,6 @@ exports.fetchArticles = ({ sort_by, order, author, topic }) => {
         .groupBy('articles.article_id')
         .orderBy(sort_by || 'created_at', order || 'desc')
         .modify(query => author ? query.where('articles.author', author) : query)
-        .modify(query => topic ? query.where('articles.topic', topic) : query);
+        .modify(query => topic ? query.where('articles.topic', topic) : query)
+        .then(data => data.length === 0 ? Promise.reject({ status: 400, msg: 'Author not found.' }) : data);
 };

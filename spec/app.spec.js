@@ -161,6 +161,14 @@ describe.only('/api', () => {
                         expect(msg).to.equal('Bad request.');
                     });
             });
+            it.only('Status: 400 returns error if passed a non-existent author query', () => {
+                return request(app)
+                    .get('/api/articles?author=bananas')
+                    .expect(400)
+                    .then(({ body: { msg } }) => {
+                        expect(msg).to.equal('Author not found.');
+                    });
+            });
         });
         describe('/:article_id', () => {
             it('Status: 405 returns error when an invalid HTTP method is used', () => {
