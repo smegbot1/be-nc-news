@@ -153,6 +153,14 @@ describe.only('/api', () => {
                         expect(msg).to.equal('Query can only take ascending or descending order.')
                     });
             });
+            it('Status: 400 returns error if passed a non-existent sort_by query', () => {
+                return request(app)
+                    .get('/api/articles?sort_by=bananas')
+                    .expect(400)
+                    .then(({ body: { msg } }) => {
+                        expect(msg).to.equal('Bad request.');
+                    });
+            });
         });
         describe('/:article_id', () => {
             it('Status: 405 returns error when an invalid HTTP method is used', () => {
