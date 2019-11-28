@@ -19,6 +19,7 @@ exports.updateCommentVotes = (comment_id, { inc_votes }) => {
         .select('*')
         .where({ comment_id })
         .then(comment => {
+            if (comment.length === 0) return Promise.reject({ status: 404, msg: 'Comment not found.'});
             comment[0].votes += inc_votes;
             return comment;
         });
