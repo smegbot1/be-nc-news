@@ -455,6 +455,15 @@ describe.only('/api', () => {
                         .expect(201)
                         .then(({ body: { comment } }) => expect(comment.votes).to.equal(18));
                 });
+                it('Status: 404 error handled when a valid but non-existent comment_id is passed', () => {
+                    return request(app)
+                        .patch('/api/comments/42')
+                        .send({ inc_votes: 2 })
+                        .expect(404)
+                        .then(({ body : { msg } }) => {
+                            expect(msg).to.equal('Comment not found.');
+                        });
+                });
             });
         });
     });
