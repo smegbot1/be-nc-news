@@ -28,5 +28,9 @@ exports.updateCommentVotes = (comment_id, { inc_votes }) => {
 exports.removeComment = comment_id => {
     return client('comments')
         .where({ comment_id })
-        .del();
+        .del()
+        .then(comment => {
+            if (comment === 0) return Promise.reject({ status: 404, msg: 'Comment not found.'});
+            else return comment;
+        });
 };
