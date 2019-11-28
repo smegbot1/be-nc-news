@@ -7,6 +7,7 @@ exports.createComment = (article_id, { username, body }) => {
 };
 
 exports.fetchCommentsByArticleId = (article_id, { sort_by, order }) => {
+    if (!(order === 'desc' || order === 'asc')) return Promise.reject({ status: 400, msg: 'Query can only take ascending or descending order.'} );
     return client('comments')
         .select('comment_id', 'votes', 'created_at', 'author', 'body')
         .orderBy(sort_by || 'created_at', order || 'desc')
