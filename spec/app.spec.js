@@ -83,7 +83,7 @@ describe.only('/api', () => {
                     expect(msg).to.equal('Invalid HTTP method used. Be reasonable man!')
                 });
         });
-        describe('GET', () => {
+        describe.only('GET', () => {
             it('Status: 200 returns an array of all articles from database', () => {
                 return request(app)
                     .get('/api/articles')
@@ -143,6 +143,14 @@ describe.only('/api', () => {
                         expect(articles.length).to.equal(11);
                         for (let i = 0; i < articles.length; i ++)
                         expect(articles[i].topic).to.eql('mitch');
+                    });
+            });
+            it('Status: 400 returns error if something other than asc or desc is passed for order query', () => {
+                return request(app)
+                    .get('/api/articles?order=banana')
+                    .expect(400)
+                    .then(({ body: { msg } }) => {
+                        expect(msg).to.equal('Query can only take ascending or descending order.')
                     });
             });
         });
@@ -376,7 +384,7 @@ describe.only('/api', () => {
                                 expect(msg).to.equal('Bad request.');
                             });
                     });
-                    it.only('Status: 400 returns error if something other than asc or desc is passed for order query', () => {
+                    it('Status: 400 returns error if something other than asc or desc is passed for order query', () => {
                         return request(app)
                             .get('/api/articles/1/comments?order=banana')
                             .expect(400)
