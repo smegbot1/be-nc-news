@@ -1,7 +1,7 @@
 const { getTopics } = require('./topics-controller');
 const { getUserByUsername } = require('./users-controller');
 const { getArticleById, patchArticle, getArticles } = require('./articles-controller');
-const { postComment, getCommentsByArticleId } = require('./comments-controller');
+const { postComment, getCommentsByArticleId, patchCommentVotes } = require('./comments-controller');
 
 module.exports = {
     getTopics,
@@ -10,5 +10,6 @@ module.exports = {
     patchArticle,
     postComment,
     getCommentsByArticleId,
-    getArticles
+    getArticles,
+    patchCommentVotes
 };

@@ -13,3 +13,13 @@ exports.fetchCommentsByArticleId = (article_id, { sort_by, order }) => {
         .orderBy(sort_by || 'created_at', order || 'desc')
         .where({ article_id });
 };
+
+exports.updateCommentVotes = (comment_id, { inc_votes }) => {
+    return client('comments')
+        .select('*')
+        .where({ comment_id })
+        .then(comment => {
+            comment[0].votes += inc_votes;
+            return comment;
+        });
+};

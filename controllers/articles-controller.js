@@ -15,6 +15,5 @@ exports.patchArticle = (req, res, next) => {
 exports.getArticles = (req, res, next) => {
     fetchArticles(req.query)
         .then(articles => res.send({articles}))
-        // .then(console.log)
         .catch(next);
 };

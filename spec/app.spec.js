@@ -431,11 +431,22 @@ describe.only('/api', () => {
                     });
             });
             describe('PATCH', () => {
-                it('Status: 201', () => {
+                it('Status: 201 returns an updated votes comment with required keys', () => {
                     return request(app)
                         .patch('/api/comments/1')
                         .send({ inc_votes: 2 })
-                        .expect(201);
+                        .expect(201)
+                        .then(({ body: { comment } }) => {
+                            expect(comment).to.be.an('object');
+                            expect(comment).to.have.keys(
+                                'article_id',
+                                'author',
+                                'body',
+                                'comment_id',
+                                'created_at',
+                                'votes'
+                                );
+                        });
                 });
             });
         });
