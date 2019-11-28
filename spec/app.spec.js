@@ -83,7 +83,7 @@ describe.only('/api', () => {
                     expect(msg).to.equal('Invalid HTTP method used. Be reasonable man!')
                 });
         });
-        describe.only('GET', () => {
+        describe('GET', () => {
             it('Status: 200 returns an array of all articles from database', () => {
                 return request(app)
                     .get('/api/articles')
@@ -161,12 +161,20 @@ describe.only('/api', () => {
                         expect(msg).to.equal('Bad request.');
                     });
             });
-            it.only('Status: 400 returns error if passed a non-existent author query', () => {
+            it('Status: 400 returns error if passed a non-existent author query', () => {
                 return request(app)
                     .get('/api/articles?author=bananas')
                     .expect(400)
                     .then(({ body: { msg } }) => {
                         expect(msg).to.equal('Author not found.');
+                    });
+            });
+            it('Status: 400 returns error if passed a non-existent topic query', () => {
+                return request(app)
+                    .get('/api/articles?topic=bananas')
+                    .expect(400)
+                    .then(({ body: { msg } }) => {
+                        expect(msg).to.equal('Topic not found.');
                     });
             });
         });

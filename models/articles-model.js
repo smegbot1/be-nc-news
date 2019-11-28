@@ -33,5 +33,6 @@ exports.fetchArticles = ({ sort_by, order, author, topic }) => {
         .orderBy(sort_by || 'created_at', order || 'desc')
         .modify(query => author ? query.where('articles.author', author) : query)
         .modify(query => topic ? query.where('articles.topic', topic) : query)
-        .then(data => data.length === 0 ? Promise.reject({ status: 400, msg: 'Author not found.' }) : data);
+        .then(data => !topic && data.length === 0 ? Promise.reject({ status: 400, msg: 'Author not found.' }) : data)
+        .then(data => topic && data.length === 0 ? Promise.reject({ status: 400, msg: 'Topic not found.' }) : data);
 };
