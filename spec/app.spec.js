@@ -9,11 +9,37 @@ const app = require('../app');
 const client = require('../db')
 
 
-describe.only('/api', () => {
+describe('/api', () => {
     after(() => client.destroy());
     beforeEach(function() { 
         this.timeout(4000)
         return client.seed.run()
+    });
+    it('Status: 405 returns error when an invalid HTTP method is used', () => {
+        return request(app)
+            .patch('/api')
+            .expect(405)
+            .then(({ body: { msg } }) => {
+                expect(msg).to.equal('Invalid HTTP method used. Be reasonable man!')
+            });
+    });
+    it('Status: 418 OMFG TEEEEPOT ZOMG LMAO', () => {
+        return request(app)
+            .delete('/api')
+            .expect(418)
+            .then(({ body: { msg } }) => {
+                expect(msg).to.equal('OMFG TEEEEPOT ZOMG LMAO')
+            });
+    });
+    describe('GET', () => {
+        it('Status: 200 returns a json object of all available endpoints and related meta', () => {
+            return request(app)
+                .get('/api')
+                .expect(200)
+                .then(({ body: { endpoints } }) => {
+                    expect(JSON.parse(endpoints)).to.be.an('object');
+                });
+        });
     });
     describe('/topics', () => {
         it('Status: 405 returns error when an invalid HTTP method is used', () => {
@@ -504,6 +530,7 @@ describe.only('/api', () => {
                 // 404 - thrown when a valid id is given but desn't exist
                 // 400 - invalid data type or non-existent parameter/query is passed
                 // 405 - invalid method used on this endpoint
+                // 418 - OMFG TEEEEPOT ZOMG
                 // 422 - unprocessable request (e.g. inserting non-existent foreign key)
 
                 // check for order of returned array first, where _count is present and testing count value
