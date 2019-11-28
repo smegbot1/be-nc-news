@@ -9,6 +9,17 @@
       "topics": [{ "slug": "football", "description": "Footie!" }]
     }
   },
+  "GET /api/users/:username": {
+    "description": "serves a user object from matching username parameter",
+    "queries": [],
+    "exampleResponse": {
+      "user": {
+        "username": "butter_bridge",
+        "name": "jonny",
+        "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+      }
+    }
+  },
   "GET /api/articles": {
     "description": "serves an array of all topics",
     "queries": ["author", "topic", "sort_by", "order"],
@@ -23,5 +34,85 @@
         }
       ]
     }
+  },
+  "GET /api/articles/:article_id": {
+    "description": "serves an article object with matching article_id",
+    "queries": [],
+    "exampleResponse": {
+      "article":
+        {
+          "article_id": 1,
+          "title": "Living in the shadow of a great man",
+          "body": "I find this existence challenging",
+          "votes": 100,
+          "topic": "mitch",
+          "author": "butter_bridge",
+          "created_at": "2018-11-15T12:21:54.171Z",
+          "comment_count": 13
+        }
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "serves an article object with matching article_id with votes updated",
+    "queries": [],
+    "exampleResponse": {
+      "article":
+        {
+          "article_id": 1,
+          "title": "Living in the shadow of a great man",
+          "body": "I find this existence challenging",
+          "votes": 99,
+          "topic": "mitch",
+          "author": "butter_bridge",
+          "created_at": "2018-11-15T12:21:54.171Z",
+          "comment_count": 13
+        }
+    }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "serves newly posted comment under matching article_id",
+    "queries": [],
+    "exampleResponse": {
+      "comment":
+        {
+          "username": "butter_bridge",
+          "body": "I find this existence challenging"
+        }
+    }
+  },
+  "GET /api/articles/:article_id/comments": {
+    "description": "serves an array of comments for the given article_id",
+    "queries": ["sort_by", "order"],
+    "exampleResponse": {
+      "comments": [
+        {
+          "comment_id": 19,
+          "author": "butter_bridge",
+          "article_id": 1,
+          "votes": 0,
+          "created_at": "2019-11-28T12:55:29.529Z",
+          "body": "No Patrick, mayonaise is not an instrument."
+        }
+      ]
+    }
+  },
+  "PATCH /api/comments/:comment_id": {
+    "description": "serves a comment object with vote count updated",
+    "queries": [],
+    "exampleResponse": {
+      "comment": {
+        "comment_id": 19,
+        "author": "butter_bridge",
+        "article_id": 1,
+        "votes": 0,
+        "created_at": "2019-11-28T12:55:29.529Z",
+        "body": "No Patrick, mayonaise is not an instrument."
+      }
+    }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes the given comment by comment_id",
+    "queries": [],
+    "exampleResponse": {}
   }
 }

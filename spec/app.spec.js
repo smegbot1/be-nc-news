@@ -37,7 +37,19 @@ describe('/api', () => {
                 .get('/api')
                 .expect(200)
                 .then(({ body: { endpoints } }) => {
-                    expect(JSON.parse(endpoints)).to.be.an('object');
+                    expect(endpoints).to.be.an('object');
+                    expect(endpoints).to.have.keys(
+                        "GET /api",
+                        "GET /api/topics",
+                        "GET /api/users/:username",
+                        "GET /api/articles",
+                        "GET /api/articles/:article_id",
+                        "PATCH /api/articles/:article_id",
+                        "POST /api/articles/:article_id/comments",
+                        "GET /api/articles/:article_id/comments",
+                        "PATCH /api/comments/:comment_id",
+                        "DELETE /api/comments/:comment_id"
+                    );
                 });
         });
     });

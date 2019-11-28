@@ -2,6 +2,7 @@ const { getTopics } = require('./topics-controller');
 const { getUserByUsername } = require('./users-controller');
 const { getArticleById, patchArticle, getArticles } = require('./articles-controller');
 const { postComment, getCommentsByArticleId, patchCommentVotes, deleteComment } = require('./comments-controller');
+const { getEndpoints } = require('./api-controller');
 
 module.exports = {
     getTopics,
@@ -12,5 +13,6 @@ module.exports = {
     getCommentsByArticleId,
     getArticles,
     patchCommentVotes,
-    deleteComment
+    deleteComment,
+    getEndpoints
 };
