@@ -485,6 +485,12 @@ describe.only('/api', () => {
                         .then(() => request(app).get('/api/articles/9/comments').expect(200))
                         .then(({ body: { comments } }) => expect(comments.length).to.equal(1));
                 });
+                it('Status: 404 returns error when a valid but non-existent comment_id is passed', () => {
+                    return request(app)
+                        .delete('/api/comments/42')
+                        .expect(404)
+                        .then(({ body: { msg } }) => expect(msg).to.equal('Comment not found.'));
+                });
             });
         });
     });
