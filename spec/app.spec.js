@@ -420,6 +420,26 @@ describe.only('/api', () => {
             });
         });
     });
+    describe.only('/comments', () => {
+        describe('/:comment_id', () => {
+            it('Status: 405 returns error when an invalid HTTP method is used', () => {
+                return request(app)
+                    .get('/api/comments/1')
+                    .expect(405)
+                    .then(({ body: { msg } }) => {
+                        expect(msg).to.equal('Invalid HTTP method used. Be reasonable man!')
+                    });
+            });
+            describe('PATCH', () => {
+                it('Status: 201', () => {
+                    return request(app)
+                        .patch('/api/comments/1')
+                        .send({ inc_votes: 2 })
+                        .expect(201);
+                });
+            });
+        });
+    });
 });
                 // 404 - thrown when a valid id is given but desn't exist
                 // 400 - invalid data type or non-existent parameter/query is passed
