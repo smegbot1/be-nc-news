@@ -491,6 +491,12 @@ describe.only('/api', () => {
                         .expect(404)
                         .then(({ body: { msg } }) => expect(msg).to.equal('Comment not found.'));
                 });
+                it('Status: 400 returns error when an invalid comment_id is passed', () => {
+                    return request(app)
+                        .delete('/api/comments/bananas')
+                        .expect(400)
+                        .then(({ body: { msg } }) => expect(msg).to.equal('Bad request.'));
+                });
             });
         });
     });
