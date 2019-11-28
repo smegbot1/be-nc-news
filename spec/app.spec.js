@@ -469,6 +469,13 @@ describe.only('/api', () => {
                         .expect(400)
                         .then(({ body: { msg } }) => expect(msg).to.equal('Bad request.'));
                 });
+                it('Status: 400 returns error when inc_votes is not a number', () => {
+                    return request(app)
+                        .patch('/api/comments/1')
+                        .send({ inc_votes: 'bananas' })
+                        .expect(400)
+                        .then(({ body: { msg } }) => expect(msg).to.equal('Bad request.'));
+                });
             });
         });
     });
