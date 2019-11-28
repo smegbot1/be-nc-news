@@ -460,9 +460,14 @@ describe.only('/api', () => {
                         .patch('/api/comments/42')
                         .send({ inc_votes: 2 })
                         .expect(404)
-                        .then(({ body : { msg } }) => {
-                            expect(msg).to.equal('Comment not found.');
-                        });
+                        .then(({ body : { msg } }) => expect(msg).to.equal('Comment not found.'));
+                });
+                it('Status: 400 returns error when an invalid comment_id is passed', () => {
+                    return request(app)
+                        .patch('/api/comments/bananas')
+                        .send({ inc_votes: 2 })
+                        .expect(400)
+                        .then(({ body: { msg } }) => expect(msg).to.equal('Bad request.'));
                 });
             });
         });
