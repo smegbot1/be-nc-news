@@ -448,6 +448,13 @@ describe.only('/api', () => {
                                 );
                         });
                 });
+                it('Status: 201 returns correctly updated votes value with comment', () => {
+                    return request(app)
+                        .patch('/api/comments/1')
+                        .send({ inc_votes: 2 })
+                        .expect(201)
+                        .then(({ body: { comment } }) => expect(comment.votes).to.equal(18));
+                });
             });
         });
     });
