@@ -7,7 +7,7 @@ exports.createComment = (article_id, { username, body }) => {
 };
 
 exports.fetchCommentsByArticleId = (article_id, { sort_by, order }) => {
-    if (!(order === 'desc' || order === 'asc')) return Promise.reject({ status: 400, msg: 'Query can only take ascending or descending order.'} );
+    if (!(order === 'desc' || order === 'asc') && order) return Promise.reject({ status: 400, msg: 'Query can only take ascending or descending order.'} );
     return client('comments')
         .select('comment_id', 'votes', 'created_at', 'author', 'body')
         .orderBy(sort_by || 'created_at', order || 'desc')
@@ -23,4 +23,10 @@ exports.updateCommentVotes = (comment_id, { inc_votes }) => {
             comment[0].votes += inc_votes;
             return comment;
         });
+};
+
+exports.removeComment = comment_id => {
+    return client('comments')
+        .where({ comment_id })
+        .del();
 };
