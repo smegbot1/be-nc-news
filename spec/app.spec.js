@@ -420,7 +420,7 @@ describe.only('/api', () => {
             });
         });
     });
-    describe.only('/comments', () => {
+    describe('/comments', () => {
         describe('/:comment_id', () => {
             it('Status: 405 returns error when an invalid HTTP method is used', () => {
                 return request(app)
@@ -475,6 +475,15 @@ describe.only('/api', () => {
                         .send({ inc_votes: 'bananas' })
                         .expect(400)
                         .then(({ body: { msg } }) => expect(msg).to.equal('Bad request.'));
+                });
+            });
+            describe.only('DELETE', () => {
+                it('Status: 204 request deletes selected comment from comments table', () => {
+                    return request(app)
+                        .delete('/api/comments/1')
+                        .expect(204)
+                        .then(() => request(app).get('/api/articles/9/comments').expect(200))
+                        .then(({ body: { comments } }) => expect(comments.length).to.equal(1));
                 });
             });
         });
