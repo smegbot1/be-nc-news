@@ -1,9 +1,11 @@
+const util = require('util');
 const { readFile } = require('fs');
 
 exports.getEndpoints = (req, res, next) => {
-    return readFile('./endpoints.json', 'utf8', (err, file) => {
-        const endpoints = JSON.parse(file);
-        if (err) next(err)
-        else res.send({ endpoints });
-    });
+    const read = util.promisify(readFile)
+    read('./endpoints.json')
+    .then(file => {
+        res.send({ endpoints: JSON.parse(file) });
+    })
+    .catch(next);
 };
