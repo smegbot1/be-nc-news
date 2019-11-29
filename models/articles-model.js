@@ -26,9 +26,9 @@ exports.updateArticle = (article_id, { inc_votes }) => {
 exports.fetchArticles = ({ sort_by, order, author, topic }) => {
     if (!(order === 'desc' || order === 'asc') && order) return Promise.reject({ status: 400, msg: 'Query can only take ascending or descending order.' });
     return verifyUser(author)
-        .then(userVeri => userVeri.length === 0 ? Promise.reject({ status: 400, msg: 'Author not found.'}) : verifyTopic(topic))
+        .then(userVeri => userVeri.length === 0 ? Promise.reject({ status: 404, msg: 'Author not found.'}) : verifyTopic(topic))
         .then(topicVeri => topicVeri.length === 0 ? 
-            Promise.reject({ status: 400, msg: 'Topic not found.'}) :
+            Promise.reject({ status: 404, msg: 'Topic not found.'}) :
             client('articles')
                 .select('articles.author', 'articles.title', 'articles.article_id', 'articles.topic', 'articles.created_at', 'articles.votes')
                 .count({ comment_count: 'comment_id' })

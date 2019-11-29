@@ -217,18 +217,18 @@ describe('/api', () => {
                         expect(msg).to.equal('Bad request.');
                     });
             });
-            it('Status: 400 returns error if passed a non-existent author query', () => {
+            it('Status: 404 returns error if passed a non-existent author query', () => {
                 return request(app)
                     .get('/api/articles?author=bananas')
-                    .expect(400)
+                    .expect(404)
                     .then(({ body: { msg } }) => {
                         expect(msg).to.equal('Author not found.');
                     });
             });
-            it('Status: 400 returns error if passed a non-existent topic query', () => {
+            it('Status: 404 returns error if passed a non-existent topic query', () => {
                 return request(app)
                     .get('/api/articles?topic=bananas')
-                    .expect(400)
+                    .expect(404)
                     .then(({ body: { msg } }) => {
                         expect(msg).to.equal('Topic not found.');
                     });
