@@ -168,7 +168,7 @@ describe('formatComments', () => {
       votes: 16,
       created_at: new Date(1511354163389)
     }];
-    expect(formatComments(input, ref, 'belongs_to', 'article_id')).to.eql(expected)
+    expect(formatComments(input, ref)).to.eql(expected)
   });
   it('function returns corrected data with multiple objects passed in array', () => {
     const input = [{ 
@@ -210,7 +210,7 @@ describe('formatComments', () => {
       votes: 16,
       created_at: new Date(1511355163389)
     }];
-    expect(formatComments(input, ref, 'belongs_to', 'article_id')).to.eql(expected);
+    expect(formatComments(input, ref)).to.eql(expected);
   });
   it('function does not mutate original input array', () => {
     const input = [{ 
@@ -228,7 +228,7 @@ describe('formatComments', () => {
       votes: 16,
       created_at: 1511354163389
     }];
-    formatComments(input, ref, 'belongs_to', 'article_id')
+    formatComments(input, ref);
     expect(input).to.eql(expected);
   });
 });

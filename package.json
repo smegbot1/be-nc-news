@@ -10,7 +10,8 @@
     "migrate-make": "knex migrate:make",
     "migrate-latest": "knex migrate:latest",
     "migrate-rollback": "knex migrate:rollback",
-    "test": "mocha spec/*.spec.js"
+    "test": "mocha spec/*.spec.js",
+    "test-utils": "mocha spec/utils.spec.js"
   },
   "repository": {
     "type": "git",
