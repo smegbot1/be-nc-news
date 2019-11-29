@@ -416,6 +416,15 @@ describe('/api', () => {
                                 expect(msg).to.equal('Bad request.');
                             });
                     });
+                    it('Status: 400 returns bad request when post body is missing a username column', () => {
+                        return request(app)
+                            .post('/api/articles/1/comments')
+                            .send({ body: 'true' })
+                            .expect(400)
+                            .then(({ body: { msg } }) => {
+                                expect(msg).to.equal('Bad request.');
+                            });
+                    });
                 });
                 describe('GET', () => {
                     it('Status: 200 returns an array of comments for a given article', () => {

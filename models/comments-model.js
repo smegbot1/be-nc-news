@@ -7,7 +7,6 @@ exports.createComment = (article_id, { username, body }) => {
 };
 
 exports.fetchCommentsByArticleId = (article_id, { sort_by, order }) => {
-    verifyArticle(article_id)
     if (!(order === 'desc' || order === 'asc') && order) return Promise.reject({ status: 400, msg: 'Query can only take ascending or descending order.'} );
     return verifyArticle(article_id)
         .then(articleVeri => articleVeri.length === 0 ?

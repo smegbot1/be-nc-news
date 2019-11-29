@@ -7,10 +7,7 @@ exports.fetchArticleById = article_id => {
         .leftJoin('comments', 'comments.article_id', 'articles.article_id')
         .groupBy('articles.article_id')
         .where('articles.article_id', article_id)
-        .then(article => {
-            if (article.length === 0) return Promise.reject({ status: 404, msg: 'Article not found.'});
-            else return article;
-        });
+        .then(article => article.length === 0 ? Promise.reject({ status: 404, msg: 'Article not found.'}) : article);
 };
 
 exports.updateArticle = (article_id, { inc_votes }) => {
@@ -23,25 +20,24 @@ exports.updateArticle = (article_id, { inc_votes }) => {
             .leftJoin('comments', 'comments.article_id', 'articles.article_id')
             .groupBy('articles.article_id')
             .where('articles.article_id', article_id))
-        .then(article => article.length === 0 ?
-            Promise.reject({ status: 404, msg: 'Article not found.'}) :
-            article);
+        .then(article => article.length === 0 ? Promise.reject({ status: 404, msg: 'Article not found.'}) : article);
 };
 
 exports.fetchArticles = ({ sort_by, order, author, topic }) => {
     if (!(order === 'desc' || order === 'asc') && order) return Promise.reject({ status: 400, msg: 'Query can only take ascending or descending order.' });
-    return verifyUser(author)
-        .then(userVeri => userVeri.length === 0 ? Promise.reject({ status: 404, msg: 'Author not found.'}) : verifyTopic(topic))
-        .then(topicVeri => topicVeri.length === 0 ? 
-            Promise.reject({ status: 404, msg: 'Topic not found.'}) :
-            client('articles')
+    return Promise.all([verifyUser(author), verifyTopic(topic)])
+        .then(([userVeri, topicVeri]) => {
+            if (userVeri.length === 0) return Promise.reject({ status: 404, msg: 'Author not found.' });
+            if (topicVeri.length === 0) return Promise.reject({ status: 404, msg: 'Topic not found.' });
+            return client('articles')
                 .select('articles.author', 'articles.title', 'articles.article_id', 'articles.topic', 'articles.created_at', 'articles.votes')
                 .count({ comment_count: 'comment_id' })
                 .leftJoin('comments', 'comments.article_id', 'articles.article_id')
                 .groupBy('articles.article_id')
                 .orderBy(sort_by || 'created_at', order || 'desc')
                 .modify(query => author ? query.where('articles.author', author) : query)
-                .modify(query => topic ? query.where('articles.topic', topic) : query));
+                .modify(query => topic ? query.where('articles.topic', topic) : query);
+        });
 };
 
 
