@@ -234,7 +234,7 @@ describe('/api', () => {
                     });
             });
         });
-        describe.only('/:article_id', () => {
+        describe('/:article_id', () => {
             it('Status: 405 returns error when an invalid HTTP method is used', () => {
                 return request(app)
                     .delete('/api/articles/1')
@@ -262,7 +262,7 @@ describe('/api', () => {
                             expect(article.comment_count).to.equal('13');
                         });
                 });
-                it('Status: 404 error handled when a valid but non-existent username is passed', () => {
+                it('Status: 404 error handled when a valid but non-existent article_id is passed', () => {
                     return request(app)
                         .get('/api/articles/42')
                         .expect(404)
@@ -270,7 +270,7 @@ describe('/api', () => {
                             expect(msg).to.equal('Article not found.');
                         });
                 });
-                it('Status: 400 returns error when an invalid and non-existent username is passed', () => {
+                it('Status: 400 returns error when an invalid and non-existent article_id is passed', () => {
                     return request(app)
                         .get('/api/articles/banana')
                         .expect(400)
@@ -279,7 +279,7 @@ describe('/api', () => {
                         });
                 });
             });
-            describe.only('PATCH', () => {
+            describe('PATCH', () => {
                 it('Status: 200 returns a single article object with its votes value updated', () => {
                     return request(app)
                         .patch('/api/articles/1')
@@ -418,7 +418,7 @@ describe('/api', () => {
                             });
                     });
                 });
-                describe('GET', () => {
+                describe.only('GET', () => {
                     it('Status: 200 returns an array of comments for a given article', () => {
                         return request(app)
                             .get('/api/articles/1/comments')
@@ -472,6 +472,14 @@ describe('/api', () => {
                             .expect(200)
                             .then(({ body: { comments } }) => {
                                 expect(comments).to.be.sortedBy('comment_id');
+                            });
+                    });
+                    it('Status: 404 error handled when a valid but non-existent article_id is passed', () => {
+                        return request(app)
+                            .get('/api/articles/42/comments')
+                            .expect(404)
+                            .then(({ body : { msg } }) => {
+                                expect(msg).to.equal('Article not found.');
                             });
                     });
                     it('Status: 400 returns error if passed a non-existent sort_by query', () => {
