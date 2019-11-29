@@ -121,7 +121,7 @@ describe('/api', () => {
                     expect(msg).to.equal('Invalid HTTP method used. Be reasonable man!')
                 });
         });
-        describe('GET', () => {
+        describe.only('GET', () => {
             it('Status: 200 returns an array of all articles from database', () => {
                 return request(app)
                     .get('/api/articles')
@@ -172,6 +172,15 @@ describe('/api', () => {
                         for (let i = 0; i < articles.length; i ++)
                         expect(articles[i].author).to.eql('icellusedkars');
                     });
+            });
+            it('Status: 200 returns empty article array when queried by existing author with no articles to their name', () => {
+                return request(app)
+                    .get('/api/articles?author=lurker')
+                    .expect(200)
+                    .then(({ body: { articles } }) => {
+                        expect(articles.length).to.equal(0);
+                        expect(articles[0]).to.equal(undefined);
+                });
             });
             it('Status: 200 returns topic query filtered articles', () => {
                 return request(app)

@@ -25,14 +25,24 @@ exports.updateArticle = (article_id, { inc_votes }) => {
 
 exports.fetchArticles = ({ sort_by, order, author, topic }) => {
     if (!(order === 'desc' || order === 'asc') && order) return Promise.reject({ status: 400, msg: 'Query can only take ascending or descending order.' });
-    return client('articles')
-        .select('articles.author', 'articles.title', 'articles.article_id', 'articles.topic', 'articles.created_at', 'articles.votes')
-        .count({ comment_count: 'comment_id' })
-        .leftJoin('comments', 'comments.article_id', 'articles.article_id')
-        .groupBy('articles.article_id')
-        .orderBy(sort_by || 'created_at', order || 'desc')
-        .modify(query => author ? query.where('articles.author', author) : query)
-        .modify(query => topic ? query.where('articles.topic', topic) : query)
-        .then(data => !topic && data.length === 0 ? Promise.reject({ status: 400, msg: 'Author not found.' }) : data)
-        .then(data => topic && data.length === 0 ? Promise.reject({ status: 400, msg: 'Topic not found.' }) : data);
+    return verifyUser(author)
+        .then(userVeri => {
+            if (userVeri.length === 0) return Promise.reject({ status: 400, msg: 'Author not found.'})
+            else return client('articles')
+                .select('articles.author', 'articles.title', 'articles.article_id', 'articles.topic', 'articles.created_at', 'articles.votes')
+                .count({ comment_count: 'comment_id' })
+                .leftJoin('comments', 'comments.article_id', 'articles.article_id')
+                .groupBy('articles.article_id')
+                .orderBy(sort_by || 'created_at', order || 'desc')
+                .modify(query => author ? query.where('articles.author', author) : query)
+                .modify(query => topic ? query.where('articles.topic', topic) : query)
+        })
+        .then(data => topic && data.length === 0 ? Promise.reject({ status: 400, msg: 'Topic not found.' }) : data)
+};
+
+
+// Assisting model functions
+function verifyUser (username) {
+    return client('users')
+        .modify(query => username ? query.select('*').where({username}) : query)
 };
