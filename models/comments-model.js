@@ -19,16 +19,14 @@ exports.fetchCommentsByArticleId = (article_id, { sort_by, order }) => {
 };
 
 exports.updateCommentVotes = (comment_id, { inc_votes }) => {
-    if (typeof inc_votes !== 'number' && inc_votes !== undefined) return Promise.reject({ status: 400, msg: 'Bad request.' })
+    if (typeof inc_votes !== 'number' && inc_votes !== undefined) return Promise.reject({ status: 400, msg: 'Bad request.' });
     return client('comments')
-        .select('*')
         .where({ comment_id })
-        .then(comment => {
-            if (comment.length === 0) return Promise.reject({ status: 404, msg: 'Comment not found.'});
-            if (inc_votes === undefined) return comment;
-            comment[0].votes += inc_votes;
-            return comment;
-        });
+        .increment('votes', inc_votes || 0)
+        .returning('*')
+        .then(comment => comment.length === 0 ?
+            Promise.reject({ status: 404, msg: 'Comment not found.'}) :
+            comment);
 };
 
 exports.removeComment = comment_id => {
