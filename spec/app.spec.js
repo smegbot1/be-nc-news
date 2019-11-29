@@ -511,7 +511,7 @@ describe('/api', () => {
                         expect(msg).to.equal('Invalid HTTP method used. Be reasonable man!')
                     });
             });
-            describe.only('PATCH', () => {
+            describe('PATCH', () => {
                 it('Status: 200 returns an updated votes comment with required keys', () => {
                     return request(app)
                         .patch('/api/comments/1')
