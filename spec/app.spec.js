@@ -307,6 +307,24 @@ describe('/api', () => {
                             );
                         });
                 });
+                it('Status: 200 returns selected article object unchanged if no patch data is sent', () => {
+                    return request(app)
+                        .patch('/api/articles/1')
+                        .expect(200)
+                        .then(({ body : { article } }) => {
+                            expect(article.votes).to.equal(100);
+                            expect(article).to.have.keys(
+                                'author',
+                                'title',
+                                'article_id',
+                                'body',
+                                'topic',
+                                'created_at',
+                                'votes',
+                                'comment_count'
+                            );
+                        });
+                });
                 it('Status: 404 error handled when a valid but non-existent username is passed', () => {
                     return request(app)
                         .patch('/api/articles/42')

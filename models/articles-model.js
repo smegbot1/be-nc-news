@@ -17,6 +17,7 @@ exports.fetchArticleById = article_id => {
 exports.updateArticle = (article_id, { inc_votes }) => {
     return this.fetchArticleById(article_id)
         .then(article => {
+            if (inc_votes === undefined) return article;
             if (typeof (inc_votes) !== 'number') return Promise.reject({ status: 400, msg: 'Bad request.' });
             article[0].votes += inc_votes
             return article;
