@@ -192,6 +192,15 @@ describe('/api', () => {
                         expect(articles[i].topic).to.eql('mitch');
                     });
             });
+            it('Status: 200 returns empty article array when queried by existing topic with no articles', () => {
+                return request(app)
+                    .get('/api/articles?topic=paper')
+                    .expect(200)
+                    .then(({ body: { articles } }) => {
+                        expect(articles.length).to.equal(0);
+                        expect(articles[0]).to.equal(undefined);
+                    });
+            });
             it('Status: 400 returns error if something other than asc or desc is passed for order query', () => {
                 return request(app)
                     .get('/api/articles?order=banana')
