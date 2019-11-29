@@ -121,7 +121,7 @@ describe('/api', () => {
                     expect(msg).to.equal('Invalid HTTP method used. Be reasonable man!')
                 });
         });
-        describe.only('GET', () => {
+        describe('GET', () => {
             it('Status: 200 returns an array of all articles from database', () => {
                 return request(app)
                     .get('/api/articles')
@@ -234,7 +234,7 @@ describe('/api', () => {
                     });
             });
         });
-        describe('/:article_id', () => {
+        describe.only('/:article_id', () => {
             it('Status: 405 returns error when an invalid HTTP method is used', () => {
                 return request(app)
                     .delete('/api/articles/1')
@@ -279,21 +279,21 @@ describe('/api', () => {
                         });
                 });
             });
-            describe('PATCH', () => {
-                it('Status: 201 returns a single article object with its votes value updated', () => {
+            describe.only('PATCH', () => {
+                it('Status: 200 returns a single article object with its votes value updated', () => {
                     return request(app)
                         .patch('/api/articles/1')
                         .send({ inc_votes: 1 })
-                        .expect(201)
+                        .expect(200)
                         .then(({ body: { article } }) => {
                             expect(article.votes).to.equal(101);
                         });
                 });
-                it('Status: 201 returns a single article object with required keys', () => {
+                it('Status: 200 returns a single article object with required keys', () => {
                     return request(app)
                         .patch('/api/articles/1')
                         .send({ inc_votes: 1 })
-                        .expect(201)
+                        .expect(200)
                         .then(({ body: { article } }) => {
                             expect(article).to.have.keys(
                                 'author',
