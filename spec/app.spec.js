@@ -389,7 +389,6 @@ describe('/api', () => {
                                 );
                             });
                     });
-                    // violates foreign keys insertions into comments
                     it('Status: 422 sql error handled for trying to insert non-existent id as a foreign key', () => {
                         return request(app)
                             .post('/api/articles/42/comments')
@@ -408,17 +407,17 @@ describe('/api', () => {
                                 expect(msg).to.equal('Unprocessable request.');
                             });
                     });
-                    it('Status: 400 returns bad request when post body is missing a column', () => {
+                    it('Status: 400 returns bad request when post body is missing a required column', () => {
                         return request(app)
                             .post('/api/articles/1/comments')
-                            .send({ username: 'butter_bridge', cheese: 'true' })
+                            .send({ cheese: 'true' })
                             .expect(400)
                             .then(({ body: { msg } }) => {
                                 expect(msg).to.equal('Bad request.');
                             });
                     });
                 });
-                describe.only('GET', () => {
+                describe('GET', () => {
                     it('Status: 200 returns an array of comments for a given article', () => {
                         return request(app)
                             .get('/api/articles/1/comments')
@@ -512,12 +511,12 @@ describe('/api', () => {
                         expect(msg).to.equal('Invalid HTTP method used. Be reasonable man!')
                     });
             });
-            describe('PATCH', () => {
-                it('Status: 201 returns an updated votes comment with required keys', () => {
+            describe.only('PATCH', () => {
+                it('Status: 200 returns an updated votes comment with required keys', () => {
                     return request(app)
                         .patch('/api/comments/1')
                         .send({ inc_votes: 2 })
-                        .expect(201)
+                        .expect(200)
                         .then(({ body: { comment } }) => {
                             expect(comment).to.be.an('object');
                             expect(comment).to.have.keys(
@@ -530,11 +529,11 @@ describe('/api', () => {
                                 );
                         });
                 });
-                it('Status: 201 returns correctly updated votes value with comment', () => {
+                it('Status: 200 returns correctly updated votes value with comment', () => {
                     return request(app)
                         .patch('/api/comments/1')
                         .send({ inc_votes: 2 })
-                        .expect(201)
+                        .expect(200)
                         .then(({ body: { comment } }) => expect(comment.votes).to.equal(18));
                 });
                 it('Status: 404 error handled when a valid but non-existent comment_id is passed', () => {

@@ -19,7 +19,7 @@ exports.getCommentsByArticleId = (req, res, next) => {
 
 exports.patchCommentVotes = (req, res, next) => {
     updateCommentVotes(req.params.comment_id, req.body)
-        .then(([comment]) => res.status(201).send({ comment }))
+        .then(([comment]) => res.send({ comment }))
         .catch(next);
 };
 
