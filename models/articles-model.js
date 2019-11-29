@@ -14,13 +14,19 @@ exports.fetchArticleById = article_id => {
 };
 
 exports.updateArticle = (article_id, { inc_votes }) => {
-    return exports.fetchArticleById(article_id)
-        .then(article => {
-            if (inc_votes === undefined) return article;
-            if (typeof (inc_votes) !== 'number') return Promise.reject({ status: 400, msg: 'Bad request.' });
-            article[0].votes += inc_votes
-            return article;
-        });
+    if (typeof (inc_votes) !== 'number' && inc_votes !== undefined) return Promise.reject({ status: 400, msg: 'Bad request.' });
+
+    return client('articles')
+        .increment('votes', inc_votes || 0)
+        .then(() => client('articles')
+            .select('articles.*')
+            .count({ comment_count: 'comment_id' })
+            .leftJoin('comments', 'comments.article_id', 'articles.article_id')
+            .groupBy('articles.article_id')
+            .where('articles.article_id', article_id))
+        .then(article => article.length === 0 ?
+            Promise.reject({ status: 404, msg: 'Article not found.'}) :
+            article);
 };
 
 exports.fetchArticles = ({ sort_by, order, author, topic }) => {
