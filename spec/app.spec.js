@@ -536,6 +536,23 @@ describe('/api', () => {
                         .expect(200)
                         .then(({ body: { comment } }) => expect(comment.votes).to.equal(18));
                 });
+                it('Status: 200 returns unchanged comment where inc_votes is not passed', () => {
+                    return request(app)
+                        .patch('/api/comments/1')
+                        .send({})
+                        .expect(200)
+                        .then(({ body: { comment } }) => {
+                            expect(comment.votes).to.equal(16);
+                            expect(comment).to.have.keys(
+                                'article_id',
+                                'author',
+                                'body',
+                                'comment_id',
+                                'created_at',
+                                'votes'
+                            );
+                        });
+                });
                 it('Status: 404 error handled when a valid but non-existent comment_id is passed', () => {
                     return request(app)
                         .patch('/api/comments/42')
