@@ -1,4 +1,5 @@
 const ENV = process.env.NODE_ENV || 'development';
+const { DB_URL } = process.env;
 const { username, password } = require('./config');
 
 const baseConfig = {
@@ -12,6 +13,9 @@ const baseConfig = {
 };
 
 const customConfig = {
+  production: {
+    connection: `${DB_URL}?ssl=true`
+  },
   development: {
     connection: {
       database: 'nc_news',
