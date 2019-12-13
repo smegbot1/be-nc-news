@@ -4,7 +4,7 @@ const apiRouter = require('./routes/api-router');
 const { err404, err500, customErr, err400, err422 } = require('./errors');
 const cors = require('cors');
 
-app.use(cors());
+app.use(cors({ origin: true }));
 app.use(express.json());
 app.use('/api', apiRouter);
 app.all('/*', err404);
