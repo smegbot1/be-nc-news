@@ -14,6 +14,7 @@ exports.updateArticle = (article_id, { inc_votes }) => {
     if (typeof (inc_votes) !== 'number' && inc_votes !== undefined) return Promise.reject({ status: 400, msg: 'Bad request.' });
     return client('articles')
         .increment('votes', inc_votes || 0)
+        .where('articles.article_id', article_id)
         .then(() => client('articles')
             .select('articles.*')
             .count({ comment_count: 'comment_id' })
