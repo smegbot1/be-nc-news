@@ -36,7 +36,7 @@ exports.fetchArticles = ({ sort_by, order, author, topic, limit, offset }) => {
                 .leftJoin('comments', 'comments.article_id', 'articles.article_id')
                 .groupBy('articles.article_id')
                 .orderBy(sort_by || 'created_at', order || 'desc')
-                .limit(limit || 10)
+                .limit(limit || 5)
                 .modify(query => offset && query.offset(offset))
                 .modify(query => author && query.where('articles.author', author))
                 .modify(query => topic && query.where('articles.topic', topic));

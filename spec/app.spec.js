@@ -121,14 +121,14 @@ describe('/api', () => {
                     expect(msg).to.equal('Invalid HTTP method used. Be reasonable man!')
                 });
         });
-        describe('GET', () => {
-            it('Status: 200 returns an array of the first 10 articles from database', () => {
+        describe.only('GET', () => {
+            it('Status: 200 returns an array of the first 5 articles from database', () => {
                 return request(app)
                     .get('/api/articles')
                     .expect(200)
                     .then(({ body: { articles } }) => {
                         expect(articles).to.be.an('array');
-                        expect(articles.length).to.equal(10);
+                        expect(articles.length).to.equal(5);
                     });
             });
             it('Status: 200 returns an array of all articles with required keys', () => {
@@ -168,7 +168,7 @@ describe('/api', () => {
                     .get('/api/articles?author=icellusedkars')
                     .expect(200)
                     .then(({ body: { articles } }) => {
-                        expect(articles.length).to.equal(6);
+                        expect(articles.length).to.equal(5);
                         for (let i = 0; i < articles.length; i ++)
                         expect(articles[i].author).to.eql('icellusedkars');
                     });
@@ -187,20 +187,20 @@ describe('/api', () => {
                     .get('/api/articles?topic=mitch')
                     .expect(200)
                     .then(({ body: { articles } }) => {
-                        expect(articles.length).to.equal(10);
+                        expect(articles.length).to.equal(5);
                         for (let i = 0; i < articles.length; i ++)
                         expect(articles[i].topic).to.eql('mitch');
                     });
             });
-            it('Status: 200 returns only the first 11 articles when entering a limit query of 11', () => {
+            it('Status: 200 returns only the first 11 articles when entering a limit query of 10', () => {
                 return request(app)
-                    .get('/api/articles?limit=11')
+                    .get('/api/articles?limit=10')
                     .expect(200)
                     .then(({ body: { articles } }) => {
-                        expect(articles.length).to.equal(11);
+                        expect(articles.length).to.equal(10);
                     });
             });
-            it('Status: 200 returns only the first 2 articles of the second page of articles, querying offset to be 10', () => {
+            it('Status: 200 returns only the last 2 articles when querying offset to be 10', () => {
                 return request(app)
                     .get('/api/articles?offset=10')
                     .expect(200)
