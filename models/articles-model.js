@@ -24,7 +24,7 @@ exports.updateArticle = (article_id, { inc_votes }) => {
         .then(article => article.length === 0 ? Promise.reject({ status: 404, msg: 'Article not found.'}) : article);
 };
 
-exports.fetchArticles = ({ sort_by, order, author, topic }) => {
+exports.fetchArticles = ({ sort_by, order, author, topic, limit, offset }) => {
     if (!(order === 'desc' || order === 'asc') && order) return Promise.reject({ status: 400, msg: 'Query can only take ascending or descending order.' });
     return Promise.all([verifyUser(author), verifyTopic(topic)])
         .then(([userVeri, topicVeri]) => {
@@ -36,13 +36,14 @@ exports.fetchArticles = ({ sort_by, order, author, topic }) => {
                 .leftJoin('comments', 'comments.article_id', 'articles.article_id')
                 .groupBy('articles.article_id')
                 .orderBy(sort_by || 'created_at', order || 'desc')
-                .modify(query => author ? query.where('articles.author', author) : query)
-                .modify(query => topic ? query.where('articles.topic', topic) : query);
+                .limit(limit || 10)
+                .modify(query => offset && query.offset(offset))
+                .modify(query => author && query.where('articles.author', author))
+                .modify(query => topic && query.where('articles.topic', topic));
         });
 };
 
 
-// Assisting model functions
 function verifyUser (username) {
     return client('users')
         .modify(query => username ? query.select('*').where({username}) : query);
