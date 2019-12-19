@@ -6,7 +6,7 @@ exports.createComment = (article_id, { username, body }) => {
         .returning('*');
 };
 
-exports.fetchCommentsByArticleId = (article_id, { sort_by, order }) => {
+exports.fetchCommentsByArticleId = (article_id, { sort_by, order, limit, offset }) => {
     if (!(order === 'desc' || order === 'asc') && order) return Promise.reject({ status: 400, msg: 'Query can only take ascending or descending order.'} );
     return verifyArticle(article_id)
         .then(articleVeri => articleVeri.length === 0 ?
@@ -14,7 +14,10 @@ exports.fetchCommentsByArticleId = (article_id, { sort_by, order }) => {
             client('comments')
             .select('comment_id', 'votes', 'created_at', 'author', 'body')
             .orderBy(sort_by || 'created_at', order || 'desc')
-            .where({ article_id }))
+            .where({ article_id })
+            .limit(limit || 10)
+            .modify(query => offset && query.offset(offset))
+        );
 };
 
 exports.updateCommentVotes = (comment_id, { inc_votes }) => {
@@ -39,7 +42,6 @@ exports.removeComment = comment_id => {
 };
 
 
-// Assisting model functions
 function verifyArticle (article_id) {
     return client('articles')
         .select('*')

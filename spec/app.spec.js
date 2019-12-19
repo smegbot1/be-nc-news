@@ -121,7 +121,7 @@ describe('/api', () => {
                     expect(msg).to.equal('Invalid HTTP method used. Be reasonable man!')
                 });
         });
-        describe.only('GET', () => {
+        describe('GET', () => {
             it('Status: 200 returns an array of the first 5 articles from database', () => {
                 return request(app)
                     .get('/api/articles')
@@ -449,7 +449,7 @@ describe('/api', () => {
                             .expect(200)
                             .then(({ body: { comments } }) => {
                                 expect(comments).to.be.an('array');
-                                expect(comments.length).to.equal(13);
+                                expect(comments.length).to.equal(10);
                             });
                     });
                     it('Status: 200 returns an array of comment objects with required keys', () => {
@@ -496,6 +496,22 @@ describe('/api', () => {
                             .expect(200)
                             .then(({ body: { comments } }) => {
                                 expect(comments).to.be.sortedBy('comment_id');
+                            });
+                    });
+                    it('Status: 200 returns array 11 comments with limit query', () => {
+                        return request(app)
+                            .get('/api/articles/1/comments?limit=11')
+                            .expect(200)
+                            .then(({ body: { comments } }) => {
+                                expect(comments.length).to.equal(11);
+                            });
+                    });
+                    it('Status: 200 returns array of 3 comments on the second page with offset of 10', () => {
+                        return request(app)
+                            .get('/api/articles/1/comments?offset=10')
+                            .expect(200)
+                            .then(({ body: { comments } }) => {
+                                expect(comments.length).to.equal(3);
                             });
                     });
                     it('Status: 404 error handled when a valid but non-existent article_id is passed', () => {
