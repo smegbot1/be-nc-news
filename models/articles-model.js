@@ -40,7 +40,8 @@ exports.fetchArticles = ({ sort_by, order, author, topic, limit, offset }) => {
                 .modify(query => offset && query.offset(offset))
                 .modify(query => author && query.where('articles.author', author))
                 .modify(query => topic && query.where('articles.topic', topic));
-        });
+        })
+        // .then(articles => ({ articles, article_count: articles.length }));
 };
 
 
