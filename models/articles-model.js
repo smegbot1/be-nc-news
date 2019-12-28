@@ -7,7 +7,7 @@ exports.fetchArticleById = article_id => {
         .leftJoin('comments', 'comments.article_id', 'articles.article_id')
         .groupBy('articles.article_id')
         .where('articles.article_id', article_id)
-        .then(article => article.length === 0 ? Promise.reject({ status: 404, msg: 'Article not found.'}) : article);
+        .then(article => article.length === 0 ? Promise.reject({ status: 404, msg: 'Article not found.' }) : article);
 };
 
 exports.updateArticle = (article_id, { inc_votes }) => {
@@ -21,7 +21,7 @@ exports.updateArticle = (article_id, { inc_votes }) => {
             .leftJoin('comments', 'comments.article_id', 'articles.article_id')
             .groupBy('articles.article_id')
             .where('articles.article_id', article_id))
-        .then(article => article.length === 0 ? Promise.reject({ status: 404, msg: 'Article not found.'}) : article);
+        .then(article => article.length === 0 ? Promise.reject({ status: 404, msg: 'Article not found.' }) : article);
 };
 
 exports.fetchArticles = ({ sort_by, order, author, topic, limit, offset }) => {
@@ -30,27 +30,35 @@ exports.fetchArticles = ({ sort_by, order, author, topic, limit, offset }) => {
         .then(([userVeri, topicVeri]) => {
             if (userVeri.length === 0) return Promise.reject({ status: 404, msg: 'Author not found.' });
             if (topicVeri.length === 0) return Promise.reject({ status: 404, msg: 'Topic not found.' });
-            return client('articles')
-                .select('articles.author', 'articles.title', 'articles.article_id', 'articles.topic', 'articles.created_at', 'articles.votes')
-                .count({ comment_count: 'comment_id' })
-                .leftJoin('comments', 'comments.article_id', 'articles.article_id')
-                .groupBy('articles.article_id')
-                .orderBy(sort_by || 'created_at', order || 'desc')
-                .limit(limit || 5)
-                .modify(query => offset && query.offset(offset))
-                .modify(query => author && query.where('articles.author', author))
-                .modify(query => topic && query.where('articles.topic', topic));
+            return Promise.all(
+                [
+                    client('articles')
+                        .select('articles.author', 'articles.title', 'articles.article_id', 'articles.topic', 'articles.created_at', 'articles.votes')
+                        .count({ comment_count: 'comment_id' })
+                        .leftJoin('comments', 'comments.article_id', 'articles.article_id')
+                        .groupBy('articles.article_id')
+                        .orderBy(sort_by || 'created_at', order || 'desc')
+                        .limit(limit || 5)
+                        .modify(query => offset && query.offset(offset))
+                        .modify(query => author && query.where('articles.author', author))
+                        .modify(query => topic && query.where('articles.topic', topic)),
+                    client('articles')
+                        .count({ article_count: 'articles.article_id' })
+                        .modify(query => author && query.where('articles.author', author))
+                        .modify(query => topic && query.where('articles.topic', topic))
+                        .then(([res]) => +res.article_count)
+                ]
+            )
         })
-        // .then(articles => ({ articles, article_count: articles.length }));
 };
 
 
-function verifyUser (username) {
+function verifyUser(username) {
     return client('users')
-        .modify(query => username ? query.select('*').where({username}) : query);
+        .modify(query => username ? query.select('*').where({ username }) : query);
 };
 
-function verifyTopic (slug) {
+function verifyTopic(slug) {
     return client('topics')
-        .modify(query => slug ? query.select('*').where({slug}) : query);
+        .modify(query => slug ? query.select('*').where({ slug }) : query);
 };

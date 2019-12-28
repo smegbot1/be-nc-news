@@ -131,7 +131,7 @@ describe('/api', () => {
                         expect(articles.length).to.equal(5);
                     });
             });
-            it('Status: 200 returns an array of all articles with required keys along with total article count for query', () => {
+            it.only('Status: 200 returns an array of all articles with required keys along with total article count for query', () => {
                 return request(app)
                     .get('/api/articles')
                     .expect(200)
@@ -145,7 +145,7 @@ describe('/api', () => {
                             'votes',
                             'comment_count'
                         );
-                        expect(article_count).to.equal(5)
+                        expect(article_count).to.equal(12)
                     });
             });
             it('Status: 200 returns sorted array by default column created_at and default order descending', () => {

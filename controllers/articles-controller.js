@@ -14,6 +14,6 @@ exports.patchArticle = (req, res, next) => {
 
 exports.getArticles = (req, res, next) => {
     fetchArticles(req.query)
-        .then(articles => res.send({articles, article_count: articles.length}))
+        .then(([articles, article_count]) => res.send({articles, article_count}))
         .catch(next);
 };
