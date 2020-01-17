@@ -26,30 +26,30 @@ exports.updateArticle = (article_id, { inc_votes }) => {
 
 exports.fetchArticles = ({ sort_by, order, author, topic, limit, offset }) => {
     if (!(order === 'desc' || order === 'asc') && order) return Promise.reject({ status: 400, msg: 'Query can only take ascending or descending order.' });
-    return Promise.all([verifyUser(author), verifyTopic(topic)])
-        .then(([userVeri, topicVeri]) => {
+    return Promise.all([
+        verifyUser(author),
+        verifyTopic(topic),
+        client('articles')
+            .select('articles.author', 'articles.title', 'articles.article_id', 'articles.topic', 'articles.created_at', 'articles.votes')
+            .count({ comment_count: 'comment_id' })
+            .leftJoin('comments', 'comments.article_id', 'articles.article_id')
+            .groupBy('articles.article_id')
+            .orderBy(sort_by || 'created_at', order || 'desc')
+            .limit(limit || 5)
+            .modify(query => offset && query.offset(offset))
+            .modify(query => author && query.where('articles.author', author))
+            .modify(query => topic && query.where('articles.topic', topic)),
+        client('articles')
+            .count({ article_count: 'articles.article_id' })
+            .modify(query => author && query.where('articles.author', author))
+            .modify(query => topic && query.where('articles.topic', topic))
+            .then(([res]) => +res.article_count)
+    ])
+        .then(([userVeri, topicVeri, articles, article_count]) => {
             if (userVeri.length === 0) return Promise.reject({ status: 404, msg: 'Author not found.' });
             if (topicVeri.length === 0) return Promise.reject({ status: 404, msg: 'Topic not found.' });
-            return Promise.all(
-                [
-                    client('articles')
-                        .select('articles.author', 'articles.title', 'articles.article_id', 'articles.topic', 'articles.created_at', 'articles.votes')
-                        .count({ comment_count: 'comment_id' })
-                        .leftJoin('comments', 'comments.article_id', 'articles.article_id')
-                        .groupBy('articles.article_id')
-                        .orderBy(sort_by || 'created_at', order || 'desc')
-                        .limit(limit || 5)
-                        .modify(query => offset && query.offset(offset))
-                        .modify(query => author && query.where('articles.author', author))
-                        .modify(query => topic && query.where('articles.topic', topic)),
-                    client('articles')
-                        .count({ article_count: 'articles.article_id' })
-                        .modify(query => author && query.where('articles.author', author))
-                        .modify(query => topic && query.where('articles.topic', topic))
-                        .then(([res]) => +res.article_count)
-                ]
-            )
-        })
+            return [articles, article_count];
+        });
 };
 
 

@@ -131,7 +131,7 @@ describe('/api', () => {
                         expect(articles.length).to.equal(5);
                     });
             });
-            it.only('Status: 200 returns an array of all articles with required keys along with total article count for query', () => {
+            it('Status: 200 returns an array of all articles with required keys along with total article count for query', () => {
                 return request(app)
                     .get('/api/articles')
                     .expect(200)
