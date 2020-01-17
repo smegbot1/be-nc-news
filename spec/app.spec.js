@@ -444,13 +444,14 @@ describe('/api', () => {
                     });
                 });
                 describe('GET', () => {
-                    it('Status: 200 returns an array of comments for a given article', () => {
+                    it('Status: 200 returns an array of comments for a given article along with a total comment count for that article', () => {
                         return request(app)
                             .get('/api/articles/1/comments')
                             .expect(200)
-                            .then(({ body: { comments } }) => {
+                            .then(({ body: { comments, comment_count } }) => {
                                 expect(comments).to.be.an('array');
                                 expect(comments.length).to.equal(10);
+                                expect(comment_count).to.equal(18)
                             });
                     });
                     it('Status: 200 returns an array of comment objects with required keys', () => {

@@ -13,7 +13,7 @@ exports.postComment = (req, res, next) => {
 
 exports.getCommentsByArticleId = (req, res, next) => {
     fetchCommentsByArticleId(req.params.article_id, req.query)
-        .then(comments => res.send({comments}))
+        .then(([comments, comment_count]) => res.send({comments, comment_count}))
         .catch(next);
 };
 

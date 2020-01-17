@@ -11,12 +11,23 @@ exports.fetchCommentsByArticleId = (article_id, { sort_by, order, limit, offset 
     return verifyArticle(article_id)
         .then(articleVeri => articleVeri.length === 0 ?
             Promise.reject({ status: 404, msg: 'Article not found.'}) :
-            client('comments')
-            .select('comment_id', 'votes', 'created_at', 'author', 'body')
-            .orderBy(sort_by || 'created_at', order || 'desc')
-            .where({ article_id })
-            .limit(limit || 10)
-            .modify(query => offset && query.offset(offset))
+            Promise.all([
+                client('comments')
+                    .select('comment_id', 'votes', 'created_at', 'author', 'body')
+                    .orderBy(sort_by || 'created_at', order || 'desc')
+                    .where({ article_id })
+                    .limit(limit || 10)
+                    .modify(query => offset && query.offset(offset)),
+                client('comments')
+                    .count({ comment_count: 'comment_id' })
+                    .then(([res]) => +res.comment_count)
+            ])
+            // client('comments')
+            // .select('comment_id', 'votes', 'created_at', 'author', 'body')
+            // .orderBy(sort_by || 'created_at', order || 'desc')
+            // .where({ article_id })
+            // .limit(limit || 10)
+            // .modify(query => offset && query.offset(offset))
         );
 };
 
